@@ -9,6 +9,7 @@
 #include <QNetworkReply>
 #include <QtConcurrent>
 #endif
+#include <unistd.h>
 
 GoogleApkDownloadTask::GoogleApkDownloadTask(QObject *parent) : QObject(parent), m_active(false) {
 #ifdef GOOGLEPLAYDOWNLOADER_USEQT
