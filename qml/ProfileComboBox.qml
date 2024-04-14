@@ -7,7 +7,7 @@ MComboBox {
     property int addProfileIndex: profiles.length
     property var currentProfile: profiles[0]
 
-    signal addProfileSelected()
+    signal addProfileSelected
 
     function getProfile() {
         return currentProfile
@@ -26,7 +26,7 @@ MComboBox {
     }
     function onAddProfileResult(newProfile) {
         if (newProfile !== null && setProfile(newProfile))
-            return;
+            return
         if (!setProfile(currentProfile)) {
             currentIndex = 0
             currentProfile = profiles[0]
@@ -70,7 +70,7 @@ MComboBox {
         }
     }
 
-    onActivated: function(index) {
+    onActivated: function (index) {
         if (index === addProfileIndex)
             addProfileSelected()
         else

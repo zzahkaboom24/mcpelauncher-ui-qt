@@ -31,7 +31,6 @@ Window {
             Layout.fillWidth: true
             Layout.preferredHeight: 50
 
-
             Text {
                 anchors.fill: parent
                 anchors.leftMargin: 20
@@ -47,14 +46,17 @@ Window {
                 anchors.rightMargin: 20
                 implicitWidth: 36
                 implicitHeight: 36
-                onClicked: { gameLog.selectAll(); gameLog.copy(); gameLog.deselect() }
+                onClicked: {
+                    gameLog.selectAll()
+                    gameLog.copy()
+                    gameLog.deselect()
+                }
                 Image {
                     anchors.centerIn: parent
                     source: "qrc:/Resources/icon-copy.png"
                     smooth: false
                 }
             }
-
         }
 
         Rectangle {
@@ -85,7 +87,10 @@ Window {
                     wrapMode: Text.WordWrap
                     linkColor: "#593b00"
                     onLinkActivated: Qt.openUrlExternally(link)
-                    visible: !launcherSettings.disableGameLog && !launcherSettings.showUnsupported && !launcherSettings.showUnverified && !launcherSettings.showBetaVersions
+                    visible: !launcherSettings.disableGameLog
+                             && !launcherSettings.showUnsupported
+                             && !launcherSettings.showUnverified
+                             && !launcherSettings.showBetaVersions
                 }
                 Text {
                     text: qsTr("Please don't report this error. Reenable Gamelog in Settings and reopen the Game to report an error")
@@ -125,7 +130,6 @@ Window {
                 ScrollBar.vertical.position = 1 - ScrollBar.vertical.size
             }
 
-
             TextEdit {
                 id: gameLog
                 x: 8
@@ -139,15 +143,17 @@ Window {
 
                 onTextChanged: {
                     logScrollView.scrollToBottom()
-                    if (launcher.crashed && !launcherSettings.disableGameLog && !launcherSettings.showUnsupported && !launcherSettings.showUnverified && !launcherSettings.showBetaVersions)
-                        tpanel.text = "The Launcher has exited with a non-zero error code.<br>This Launcher is instable, please retry starting the Game before open an issue. You minimally have to provide the crashlog, your Operating System name, version, CPU architecture, GPU drivers, Launcher version, you find it in Settings->About or the git commit's of your build, Game version inclusive architecture like 1.16.201.5 (x86_64), you find it in the big green Button and a guide how to reproduce your issue. Keep in mind, you have no right for support and most crash reports cannot be fixed at all. <a href=\"https://github.com/minecraft-linux/mcpelauncher-manifest/issues\">Please click here to search for existing similar issues, before open a new issue</a>" 
+                    if (launcher.crashed && !launcherSettings.disableGameLog
+                            && !launcherSettings.showUnsupported
+                            && !launcherSettings.showUnverified
+                            && !launcherSettings.showBetaVersions)
+                        tpanel.text = "The Launcher has exited with a non-zero error code.<br>This Launcher is instable, please retry starting the Game before open an issue. You minimally have to provide the crashlog, your Operating System name, version, CPU architecture, GPU drivers, Launcher version, you find it in Settings->About or the git commit's of your build, Game version inclusive architecture like 1.16.201.5 (x86_64), you find it in the big green Button and a guide how to reproduce your issue. Keep in mind, you have no right for support and most crash reports cannot be fixed at all. <a href=\"https://github.com/minecraft-linux/mcpelauncher-manifest/issues\">Please click here to search for existing similar issues, before open a new issue</a>"
                 }
             }
 
             onWidthChanged: scrollToBottom()
             onHeightChanged: scrollToBottom()
         }
-
     }
 
     Connections {
@@ -155,5 +161,4 @@ Window {
         onLogCleared: gameLog.clear()
         onLogAppended: text => gameLog.insert(gameLog.length, text)
     }
-
 }

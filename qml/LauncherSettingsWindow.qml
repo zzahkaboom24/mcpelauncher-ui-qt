@@ -9,7 +9,7 @@ import io.mrarm.mcpelauncher 1.0
 
 Window {
 
-    id:window
+    id: window
     width: 500
     height: layout.implicitHeight
     minimumWidth: 500
@@ -90,7 +90,6 @@ Window {
                     }
                 }
                 Keys.forwardTo: [content]
-                
             }
         }
 
@@ -101,21 +100,17 @@ Window {
             Layout.rightMargin: 20
             currentIndex: tabs.currentIndex
 
-            LauncherSettingsGeneral {
-            }
+            LauncherSettingsGeneral {}
 
-            LauncherSettingsStorage {
-            }
+            LauncherSettingsStorage {}
 
-            LauncherSettingsVersions {
-            }
+            LauncherSettingsVersions {}
 
             LauncherSettingsDev {
-		playVerChannel: window.playVerChannel
+                playVerChannel: window.playVerChannel
             }
 
-            LauncherSettingsAbout {
-            }
+            LauncherSettingsAbout {}
             Keys.forwardTo: children[tabs.currentIndex]
         }
 
@@ -139,18 +134,14 @@ Window {
                     text: qsTr("Close")
                     onClicked: close()
                 }
-
             }
-
         }
-
     }
 
     function getCurrentGameDataDir() {
-        if(window.currentGameDataDir && window.currentGameDataDir.length > 0) {
-            return window.currentGameDataDir;
+        if (window.currentGameDataDir && window.currentGameDataDir.length > 0) {
+            return window.currentGameDataDir
         }
-        return launcherSettings.gameDataDir;
+        return launcherSettings.gameDataDir
     }
-
 }

@@ -51,15 +51,14 @@ Window {
                 MButton {
                     text: qsTr("Delete profile")
                     Layout.rightMargin: 20
-                    visible: profile !== null && profile !== profileManager.defaultProfile
+                    visible: profile !== null
+                             && profile !== profileManager.defaultProfile
                     onClicked: {
                         profileManager.deleteProfile(profile)
                         close()
                     }
                 }
-
             }
-
         }
 
         GridLayout {
@@ -87,49 +86,79 @@ Window {
                 font.pointSize: parent.labelFontSize
             }
             MComboBox {
-                property var versions: versionManager.versions.getAll().sort(function(a, b) { return b.versionCode - a.versionCode; })
-                property var archivalVersions: excludeInstalledVersions(versionManager.archivalVersions.versions)
+                property var versions: versionManager.versions.getAll().sort(
+                                           function (a, b) {
+                                               return b.versionCode - a.versionCode
+                                           })
+                property var archivalVersions: excludeInstalledVersions(
+                                                   versionManager.archivalVersions.versions)
                 property var extraVersionName: null
                 property var hideLatest: googleLoginHelper.hideLatest
                 property var data: []
                 property var update: () => {
-                    data = [];
-                    versionsmodel.clear();
-                    var abis = googleLoginHelper.getAbis(launcherSettings.showUnsupported);
-                    var append = function(obj) {
-                        data.push(obj);
-                        versionsmodel.append({ name: obj.name });
-                    };
-                    if (!hideLatest && googleLoginHelper.account !== null && playVerChannel.hasVerifiedLicense) {
-                        var support = checkGooglePlayLatestSupport()
-                        var latest = support ? playVerChannel.latestVersion : launcherLatestVersion().versionName
-                        append({name: qsTr("Latest %1 (%2)").arg((latest.length === 0 ? qsTr("version") : latest)).arg((support ? qsTr("Google Play") : qsTr("compatible"))), versionType: ProfileInfo.LATEST_GOOGLE_PLAY})
-                    }
-                    for (var i = 0; i < versions.length; i++) {
-                        for (var j = 0; j < abis.length; j++) {
-                            for (var k = 0; k < versions[i].archs.length; k++) {
-                                if (versions[i].archs[k] == abis[j]) {
-                                    append({name: qsTr("%1 (installed, %2)").arg(versions[i].versionName).arg(versions[i].archs[k]), versionType: ProfileInfo.LOCKED_CODE, obj: versions[i], arch: versions[i].archs[k] })
-                                    break;
-                                }
-                            }
-                        }
-                    }
-                    if (!hideLatest && googleLoginHelper.account !== null && playVerChannel.hasVerifiedLicense) {
-                        for (i = 0; i < archivalVersions.length; i++) {
-                            for (var j = 0; j < abis.length; j++) {
-                                if (archivalVersions[i].abi == abis[j]) {
-                                    append({name: qsTr("%1 (%2%3)").arg(archivalVersions[i].versionName).arg(archivalVersions[i].abi).arg((archivalVersions[i].isBeta ? (qsTr(", ") + qsTr("beta")) : "")), versionType: ProfileInfo.LOCKED_CODE, obj: archivalVersions[i], arch: archivalVersions[i].abi})
-                                    break;
-                                }
-                            }
-                        }
-                    }
-                    if (extraVersionName != null) {
-                        append({name: extraVersionName, versionType: ProfileInfo.LOCKED_NAME})
-                    }
-                }
-                
+                                         data = []
+                                         versionsmodel.clear()
+                                         var abis = googleLoginHelper.getAbis(
+                                             launcherSettings.showUnsupported)
+                                         var append = function (obj) {
+                                             data.push(obj)
+                                             versionsmodel.append({
+                                                                      "name": obj.name
+                                                                  })
+                                         }
+                                         if (!hideLatest
+                                             && googleLoginHelper.account !== null
+                                             && playVerChannel.hasVerifiedLicense) {
+                                             var support = checkGooglePlayLatestSupport()
+                                             var latest = support ? playVerChannel.latestVersion : launcherLatestVersion(
+                                                                        ).versionName
+                                             append({
+                                                        "name": qsTr("Latest %1 (%2)").arg(
+                                                                    (latest.length === 0 ? qsTr("version") : latest)).arg((support ? qsTr("Google Play") : qsTr("compatible"))),
+                                                        "versionType": ProfileInfo.LATEST_GOOGLE_PLAY
+                                                    })
+                                         }
+                                         for (var i = 0; i < versions.length; i++) {
+                                             for (var j = 0; j < abis.length; j++) {
+                                                 for (var k = 0; k
+                                                      < versions[i].archs.length; k++) {
+                                                     if (versions[i].archs[k] == abis[j]) {
+                                                         append({
+                                                                    "name": qsTr("%1 (installed, %2)").arg(versions[i].versionName).arg(versions[i].archs[k]),
+                                                                    "versionType": ProfileInfo.LOCKED_CODE,
+                                                                    "obj": versions[i],
+                                                                    "arch": versions[i].archs[k]
+                                                                })
+                                                         break
+                                                     }
+                                                 }
+                                             }
+                                         }
+                                         if (!hideLatest
+                                             && googleLoginHelper.account !== null
+                                             && playVerChannel.hasVerifiedLicense) {
+                                             for (i = 0; i < archivalVersions.length; i++) {
+                                                 for (var j = 0; j < abis.length; j++) {
+                                                     if (archivalVersions[i].abi == abis[j]) {
+                                                         append({
+                                                                    "name": qsTr("%1 (%2%3)").arg(archivalVersions[i].versionName).arg(archivalVersions[i].abi).arg((archivalVersions[i].isBeta ? (qsTr(", ") + qsTr("beta")) : "")),
+                                                                    "versionType": ProfileInfo.LOCKED_CODE,
+                                                                    "obj": archivalVersions[i],
+                                                                    "arch": archivalVersions[i].abi
+                                                                })
+                                                         break
+                                                     }
+                                                 }
+                                             }
+                                         }
+                                         if (extraVersionName != null) {
+                                             append({
+                                                        "name": extraVersionName,
+                                                        "versionType": ProfileInfo.LOCKED_NAME
+                                                    })
+                                         }
+                                     }
+
                 ListModel {
                     id: versionsmodel
                 }
@@ -137,10 +166,10 @@ Window {
                 function contains(arr, el) {
                     for (var i = 0; i < arr.length; ++i) {
                         if (arr[i] === el) {
-                            return true;
+                            return true
                         }
                     }
-                    return false;
+                    return false
                 }
 
                 function excludeInstalledVersions(arr) {
@@ -150,8 +179,13 @@ Window {
                         installed[versions[i].versionName] = versions[i].archs
                     for (i = 0; i < arr.length; i++) {
                         // Show Beta in versionslist if in Beta program and allow showUnsupported or allow Beta
-                        if (arr[i].versionName in installed && contains(installed[arr[i].versionName], arr[i].abi) || arr[i].isBeta && (!playVerChannel.latestVersionIsBeta || !(launcherSettings.showUnsupported || launcherSettings.showBetaVersions)))
-                            continue;
+                        if (arr[i].versionName in installed && contains(
+                                    installed[arr[i].versionName],
+                                    arr[i].abi) || arr[i].isBeta
+                                && (!playVerChannel.latestVersionIsBeta
+                                    || !(launcherSettings.showUnsupported
+                                         || launcherSettings.showBetaVersions)))
+                            continue
                         ret.push(arr[i])
                     }
                     return ret
@@ -173,7 +207,7 @@ Window {
                 text: qsTr("Texture Patch")
                 font.pointSize: parent.labelFontSize
             }
-            MComboBox {                
+            MComboBox {
                 ListModel {
                     id: texturePatchModel
 
@@ -187,7 +221,6 @@ Window {
                         name: "Disable"
                     }
                 }
-
 
                 id: profileTexturePatch
                 Layout.fillWidth: true
@@ -217,7 +250,6 @@ Window {
                     }
                 }
 
-
                 id: profileGraphicsAPI
                 Layout.fillWidth: true
 
@@ -242,15 +274,18 @@ Window {
                     text: "..."
                     enabled: dataDirCheck.checked
                     onClicked: {
-                        if (dataDirPath.text !== null && dataDirPath.text.length > 0)
-                            dataDirPathDialog.folder = QmlUrlUtils.localFileToUrl(dataDirPath.text)
+                        if (dataDirPath.text !== null
+                                && dataDirPath.text.length > 0)
+                            dataDirPathDialog.folder = QmlUrlUtils.localFileToUrl(
+                                        dataDirPath.text)
                         dataDirPathDialog.open()
                     }
                 }
                 FolderDialog {
                     id: dataDirPathDialog
                     onAccepted: {
-                        dataDirPath.text = QmlUrlUtils.urlToLocalFile(dataDirPathDialog.folder)
+                        dataDirPath.text = QmlUrlUtils.urlToLocalFile(
+                                    dataDirPathDialog.folder)
                     }
                 }
             }
@@ -324,26 +359,24 @@ Window {
                     text: qsTr("Cancel")
                     onClicked: close()
                 }
-
             }
-
         }
-
     }
 
     function reset() {
         profile = null
         profileName.text = ""
         profileName.enabled = true
-        profileVersion.extraVersionName = null;
-        profileVersion.update();
+        profileVersion.extraVersionName = null
+        profileVersion.update()
         profileVersion.currentIndex = 0
         profileTexturePatch.currentIndex = 0
         if (SHOW_ANGLEBACKEND) {
             profileGraphicsAPI.currentIndex = 0
         }
         dataDirCheck.checked = false
-        dataDirPath.text = QmlUrlUtils.urlToLocalFile(launcherSettings.gameDataDir)
+        dataDirPath.text = QmlUrlUtils.urlToLocalFile(
+                    launcherSettings.gameDataDir)
         windowSizeCheck.checked = false
         windowWidth.text = "720"
         windowHeight.text = "480"
@@ -353,24 +386,29 @@ Window {
         profile = p
         profileName.text = profile.name
         profileName.enabled = !profile.nameLocked
-        profileVersion.extraVersionName = null;
-        profileVersion.update();
+        profileVersion.extraVersionName = null
+        profileVersion.update()
         if (profile.versionType == ProfileInfo.LATEST_GOOGLE_PLAY) {
             profileVersion.currentIndex = 0
         } else if (profile.versionType == ProfileInfo.LOCKED_CODE) {
             var index = -1
             for (var i = 0; i < versionsmodel.count; i++) {
-                var entry = profileVersion.data[i];
-                if (entry && entry.obj && entry.obj.versionCode === profile.versionCode && profile.arch === entry.arch) {
+                var entry = profileVersion.data[i]
+                if (entry && entry.obj
+                        && entry.obj.versionCode === profile.versionCode
+                        && profile.arch === entry.arch) {
                     index = i
                     break
                 }
             }
             if (index === -1) {
-                profileVersion.extraVersionName = getDisplayedVersionName();
-                var extraversion = {name: profileVersion.extraVersionName, versionType: ProfileInfo.LOCKED_NAME};
-                versionsmodel.append(extraversion);
-                profileVersion.data.push(extraversion);
+                profileVersion.extraVersionName = getDisplayedVersionName()
+                var extraversion = {
+                    "name": profileVersion.extraVersionName,
+                    "versionType": ProfileInfo.LOCKED_NAME
+                }
+                versionsmodel.append(extraversion)
+                profileVersion.data.push(extraversion)
                 profileVersion.currentIndex = versionsmodel.count - 1
             } else {
                 profileVersion.currentIndex = index
@@ -378,35 +416,41 @@ Window {
         } else if (profile.versionType == ProfileInfo.LOCKED_NAME) {
             var index = -1
             for (var i = 0; i < versionsmodel.count; i++) {
-                if (profileVersion.data[i].obj && profileVersion.data[i].obj.directory === profile.directory) {
+                if (profileVersion.data[i].obj
+                        && profileVersion.data[i].obj.directory === profile.directory) {
                     index = i
                     break
                 }
             }
             if (index === -1) {
-                profileVersion.extraVersionName = getDisplayedVersionName()//profile.versionDirName
-                var extraversion = {name: profileVersion.extraVersionName, versionType: ProfileInfo.LOCKED_NAME};
+                profileVersion.extraVersionName = getDisplayedVersionName(
+                            ) //profile.versionDirName
+                var extraversion = {
+                    "name": profileVersion.extraVersionName,
+                    "versionType": ProfileInfo.LOCKED_NAME
+                }
                 versionsmodel.append(extraversion)
-                profileVersion.data.push(extraversion);
+                profileVersion.data.push(extraversion)
                 profileVersion.currentIndex = versionsmodel.count - 1
             } else {
                 profileVersion.currentIndex = index
             }
         }
 
-        profileTexturePatch.currentIndex = 0;
-        if(profile.texturePatch) {
-            profileTexturePatch.currentIndex = profile.texturePatch;
+        profileTexturePatch.currentIndex = 0
+        if (profile.texturePatch) {
+            profileTexturePatch.currentIndex = profile.texturePatch
         }
         if (SHOW_ANGLEBACKEND) {
-            profileGraphicsAPI.currentIndex = 0;
-            if(profile.graphicsAPI) {
-                profileGraphicsAPI.currentIndex = profile.graphicsAPI;
+            profileGraphicsAPI.currentIndex = 0
+            if (profile.graphicsAPI) {
+                profileGraphicsAPI.currentIndex = profile.graphicsAPI
             }
         }
 
         dataDirCheck.checked = profile.dataDirCustom
-        dataDirPath.text = profile.dataDir.length ? profile.dataDir : QmlUrlUtils.urlToLocalFile(launcherSettings.gameDataDir)
+        dataDirPath.text = profile.dataDir.length ? profile.dataDir : QmlUrlUtils.urlToLocalFile(
+                                                        launcherSettings.gameDataDir)
         windowSizeCheck.checked = profile.windowCustomSize
         windowWidth.text = profile.windowWidth
         windowHeight.text = profile.windowHeight
@@ -417,7 +461,8 @@ Window {
             profileInvalidNameDialog.open()
             return
         }
-        if (profile == null || (profile.name !== profileName.text && !profile.nameLocked)) {
+        if (profile == null || (profile.name !== profileName.text
+                                && !profile.nameLocked)) {
             var profiles = profileManager.profiles
             for (var i = 0; i < profiles.length; i++) {
                 if (profiles[i].name === profileName.text) {
@@ -435,14 +480,19 @@ Window {
             profile.graphicsAPI = profileGraphicsAPI.currentIndex
         }
         profile.arch = ""
-        if (profileVersion.data[profileVersion.currentIndex].obj || profileVersion.data[profileVersion.currentIndex].versionType == ProfileInfo.LATEST_GOOGLE_PLAY) {
+        if (profileVersion.data[profileVersion.currentIndex].obj
+                || profileVersion.data[profileVersion.currentIndex].versionType
+                == ProfileInfo.LATEST_GOOGLE_PLAY) {
             profile.versionType = profileVersion.data[profileVersion.currentIndex].versionType
             // fails if it is a extraversion
             if (profile.versionType == ProfileInfo.LOCKED_NAME)
-                profile.versionDirName = profileVersion.data[profileVersion.currentIndex].obj.directory
+                profile.versionDirName
+                        = profileVersion.data[profileVersion.currentIndex].obj.directory
             if (profile.versionType == ProfileInfo.LOCKED_CODE) {
-                profile.versionCode = profileVersion.data[profileVersion.currentIndex].obj.versionCode
-                profile.arch = profileVersion.data[profileVersion.currentIndex].arch || ""
+                profile.versionCode
+                        = profileVersion.data[profileVersion.currentIndex].obj.versionCode
+                profile.arch = profileVersion.data[profileVersion.currentIndex].arch
+                        || ""
             }
         }
 
@@ -450,7 +500,8 @@ Window {
         profile.dataDirCustom = dataDirCheck.checked
         profile.dataDir = dataDirPath.text
         profile.windowWidth = parseInt(windowWidth.text) || profile.windowWidth
-        profile.windowHeight = parseInt(windowHeight.text) || profile.windowHeight
+        profile.windowHeight = parseInt(windowHeight.text)
+                || profile.windowHeight
         profile.save()
     }
 
@@ -465,5 +516,4 @@ Window {
         text: qsTr("The specified profile name is not valid")
         title: qsTr("Profile Edit Error")
     }
-
 }

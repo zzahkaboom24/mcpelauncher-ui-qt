@@ -52,7 +52,8 @@ ScrollView {
             text: qsTr("Show Beta Versions")
             font.pointSize: parent.labelFontSize
             Layout.columnSpan: 2
-            Component.onCompleted: checked = ldevsettings.playVerChannel.latestVersionIsBeta && launcherSettings.showBetaVersions
+            Component.onCompleted: checked = ldevsettings.playVerChannel.latestVersionIsBeta
+                                   && launcherSettings.showBetaVersions
             onCheckedChanged: launcherSettings.showBetaVersions = checked
             enabled: ldevsettings.playVerChannel.latestVersionIsBeta
         }
@@ -93,20 +94,20 @@ ScrollView {
             }
 
             Component.onCompleted: {
-                console.log("launcherSettings.singleArch " + launcherSettings.singleArch);
-                for(var i = 0; i < model.count; i++) {
-                    if(launcherSettings.singleArch == model.get(i).name) {
-                        currentIndex = i;
-                        break;
+                console.log("launcherSettings.singleArch " + launcherSettings.singleArch)
+                for (var i = 0; i < model.count; i++) {
+                    if (launcherSettings.singleArch == model.get(i).name) {
+                        currentIndex = i
+                        break
                     }
                 }
             }
 
-            onActivated: function(index) {
-                console.log("onActivated");
-                var val = model.get(index).name;
-                console.log(val);
-                launcherSettings.singleArch = val;
+            onActivated: function (index) {
+                console.log("onActivated")
+                var val = model.get(index).name
+                console.log(val)
+                launcherSettings.singleArch = val
             }
         }
 
@@ -121,8 +122,10 @@ ScrollView {
             Layout.fillWidth: true
             Component.onCompleted: versionsFeedBaseUrl.text = launcherSettings.versionsFeedBaseUrl
             onEditingFinished: {
-                launcherSettings.versionsFeedBaseUrl = versionsFeedBaseUrl.text;
-                versionManagerInstance.downloadLists(googleLoginHelperInstance.getAbis(true), launcherSettings.versionsFeedBaseUrl);
+                launcherSettings.versionsFeedBaseUrl = versionsFeedBaseUrl.text
+                versionManagerInstance.downloadLists(
+                            googleLoginHelperInstance.getAbis(true),
+                            launcherSettings.versionsFeedBaseUrl)
             }
         }
 

@@ -33,12 +33,16 @@ Item {
             Rectangle {
                 x: newsImage.x + newsImage.width / 2 - width / 2
                 y: newsImage.height - height
-                width: Math.min(newsContainer.width, Math.max(newsImage.paintedWidth, newsText.implicitWidth))
+                width: Math.min(newsContainer.width,
+                                Math.max(newsImage.paintedWidth,
+                                         newsText.implicitWidth))
                 height: Math.min(childrenRect.height, parent.height)
                 color: "#A0000000"
 
                 Text {
-                    width: Math.min(newsContainer.width, Math.max(newsImage.paintedWidth, newsText.implicitWidth))
+                    width: Math.min(newsContainer.width,
+                                    Math.max(newsImage.paintedWidth,
+                                             newsText.implicitWidth))
                     id: newsText
                     font.weight: Font.Bold
                     text: modelData.name
@@ -79,13 +83,21 @@ Item {
                     id: trIn
                     from: "inactive_right,inactive_left"
                     to: "active"
-                    PropertyAnimation { properties: "x"; duration: 500; easing.type: Easing.InOutSine }
+                    PropertyAnimation {
+                        properties: "x"
+                        duration: 500
+                        easing.type: Easing.InOutSine
+                    }
                 },
                 Transition {
                     id: trOut
                     from: "active"
                     to: "inactive_right,inactive_left"
-                    PropertyAnimation { properties: "x"; duration: 500; easing.type: Easing.InOutSine }
+                    PropertyAnimation {
+                        properties: "x"
+                        duration: 500
+                        easing.type: Easing.InOutSine
+                    }
                 }
             ]
 
@@ -94,7 +106,6 @@ Item {
             }
 
             onClicked: Qt.openUrlExternally(modelData.url)
-
         }
     }
 
@@ -108,45 +119,54 @@ Item {
         running: false
         interval: 7000
         repeat: true
-        onTriggered: function() { next(); }
+        onTriggered: function () {
+            next()
+        }
     }
-
 
     MBusyIndicator {
         x: parent.width / 2 - width / 2
         y: parent.height / 2 - height / 2
-        visible: repeater.model === null || repeater.itemAt(selectedEntry) === null || repeater.itemAt(selectedEntry).isLoading()
+        visible: repeater.model === null || repeater.itemAt(
+                     selectedEntry) === null || repeater.itemAt(
+                     selectedEntry).isLoading()
     }
 
     function loadNews() {
-        var req = new XMLHttpRequest();
-        req.open("GET", "https://www.minecraft.net/content/minecraft-net/_jcr_content.articles.grid?tileselection=auto&tagsPath=minecraft:article/news,minecraft:article/insider,minecraft:article/culture,minecraft:article/merch,minecraft:stockholm/news,minecraft:stockholm/guides,minecraft:stockholm/events,minecraft:stockholm/minecraft-builds,minecraft:stockholm/marketplace,minecraft:stockholm/deep-dives,minecraft:stockholm/merch,minecraft:stockholm/earth,minecraft:stockholm/dungeons,minecraft:stockholm/realms-plus,minecraft:stockholm/minecraft,minecraft:stockholm/realms-java,minecraft:stockholm/nether&propResPath=/content/minecraft-net/language-masters/en-us/jcr:content/root/generic-container/par/bleeding_page_sectio_1278766118/page-section-par/grid&count=2000&pageSize=20&lang=/content/minecraft-net/language-masters/en-us", true);
-        req.onerror = function() {
-            console.log("Failed to load news");
-        };
-        req.onreadystatechange = function() {
+        var req = new XMLHttpRequest()
+        req.open("GET",
+                 "https://www.minecraft.net/content/minecraft-net/_jcr_content.articles.grid?tileselection=auto&tagsPath=minecraft:article/news,minecraft:article/insider,minecraft:article/culture,minecraft:article/merch,minecraft:stockholm/news,minecraft:stockholm/guides,minecraft:stockholm/events,minecraft:stockholm/minecraft-builds,minecraft:stockholm/marketplace,minecraft:stockholm/deep-dives,minecraft:stockholm/merch,minecraft:stockholm/earth,minecraft:stockholm/dungeons,minecraft:stockholm/realms-plus,minecraft:stockholm/minecraft,minecraft:stockholm/realms-java,minecraft:stockholm/nether&propResPath=/content/minecraft-net/language-masters/en-us/jcr:content/root/generic-container/par/bleeding_page_sectio_1278766118/page-section-par/grid&count=2000&pageSize=20&lang=/content/minecraft-net/language-masters/en-us",
+                 true)
+        req.onerror = function () {
+            console.log("Failed to load news")
+        }
+        req.onreadystatechange = function () {
             if (req.readyState === XMLHttpRequest.DONE) {
                 if (req.status === 200)
-                    parseNewsResponse(JSON.parse(req.responseText));
+                    parseNewsResponse(JSON.parse(req.responseText))
                 else
-                    req.onerror();
+                    req.onerror()
             }
-        };
-        req.send();
+        }
+        req.send()
     }
     function parseNewsResponse(resp) {
-        var entries = [];
+        var entries = []
         for (var i = 0; i < resp.article_grid.length; i++) {
-            var e = resp.article_grid[i];
-            var t = e.preferred_tile || e.default_tile;
+            var e = resp.article_grid[i]
+            var t = e.preferred_tile || e.default_tile
             if (!t)
-                continue;
-            entries.push({"name": t.title || t.text, "image": "https://www.minecraft.net/" + t.image.imageURL, "url": "https://minecraft.net/" + e.article_url.substr(1)});
+                continue
+            entries.push({
+                             "name": t.title || t.text,
+                             "image": "https://www.minecraft.net/" + t.image.imageURL,
+                             "url": "https://minecraft.net/" + e.article_url.substr(
+                                        1)
+                         })
         }
-        repeater.model = entries;
+        repeater.model = entries
         sliderTimer.start()
     }
-
 
     Component.onCompleted: loadNews()
 }

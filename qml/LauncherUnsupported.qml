@@ -8,13 +8,14 @@ import io.mrarm.mcpelauncher 1.0
 
 LauncherBase {
     property GoogleLoginHelper googleLoginHelper
-    signal finished()
+    signal finished
     id: rowLayout
     spacing: 0
 
     TextEdit {
         textFormat: TextEdit.RichText
-        text: qsTr("<b><font color=\"#ff0000\">Sorry your Computer cannot run Minecraft with this Launcher</font></b>, this CPU is too old.<br/>Details:<br/>%1").arg(googleLoginHelper.GetSupportReport())
+        text: qsTr("<b><font color=\"#ff0000\">Sorry your Computer cannot run Minecraft with this Launcher</font></b>, this CPU is too old.<br/>Details:<br/>%1").arg(
+                  googleLoginHelper.GetSupportReport())
         readOnly: true
         wrapMode: Text.WordWrap
         selectByMouse: true
@@ -37,7 +38,5 @@ LauncherBase {
                 rowLayout.finished()
             }
         }
-
     }
-
 }

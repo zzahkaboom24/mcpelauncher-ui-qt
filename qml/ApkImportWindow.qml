@@ -18,7 +18,7 @@ Window {
     visible: apkImportHelper.extractingApk
     property var allowIncompatible: false
 
-    onClosing: function() {
+    onClosing: function () {
         close.accepted = false
     }
 
@@ -38,7 +38,6 @@ Window {
             width: parent.width
             Layout.fillWidth: true
         }
-
     }
 
     ApkImportHelper {
@@ -51,5 +50,4 @@ Window {
     function pickFile() {
         apkImportHelper.pickFile()
     }
-
 }

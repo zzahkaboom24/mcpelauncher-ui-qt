@@ -28,12 +28,14 @@ ScrollView {
             id: item1
             Layout.fillWidth: true
             height: childrenRect.height
-            Layout.minimumWidth: googleAccountIdLabel.implicitWidth + googlesigninbtn.implicitWidth + 5
+            Layout.minimumWidth: googleAccountIdLabel.implicitWidth
+                                 + googlesigninbtn.implicitWidth + 5
 
             RowLayout {
                 anchors.right: parent.right
                 Text {
-                    text: googleLoginHelper.account !== null ? googleLoginHelper.account.accountIdentifier : ""
+                    text: googleLoginHelper.account
+                          !== null ? googleLoginHelper.account.accountIdentifier : ""
                     id: googleAccountIdLabel
                     Layout.alignment: Qt.AlignRight
                     font.pointSize: 11
@@ -42,7 +44,8 @@ ScrollView {
                     id: googlesigninbtn
                     Layout.alignment: Qt.AlignRight
                     Layout.rightMargin: 20
-                    text: googleLoginHelper.account !== null ? qsTr("Sign out") : qsTr("Sign in")
+                    text: googleLoginHelper.account !== null ? qsTr("Sign out") : qsTr(
+                                                                   "Sign in")
                     onClicked: {
                         if (googleLoginHelper.account !== null)
                             googleLoginHelper.signOut()
@@ -115,6 +118,5 @@ ScrollView {
             Layout.columnSpan: 1
             onClicked: gamepadTool.show()
         }
-        
     }
 }

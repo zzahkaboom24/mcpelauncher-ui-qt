@@ -13,7 +13,7 @@ Item {
     property bool acquiringAccount: false
     property bool extractingApk: false
 
-    signal finished()
+    signal finished
 
     Image {
         anchors.fill: parent
@@ -57,7 +57,7 @@ Item {
                 rightPadding: 50
                 Layout.alignment: Qt.AlignHCenter
                 Layout.topMargin: 22
-                onClicked: function() {
+                onClicked: function () {
                     acquiringAccount = true
                     googleLoginHelper.acquireAccount(window)
                 }
@@ -70,11 +70,14 @@ Item {
                 Layout.topMargin: 4
                 spacing: 25
 
-                property int buttonWidth: Math.max(children[0].implicitWidth, children[1].implicitWidth)
+                property int buttonWidth: Math.max(children[0].implicitWidth,
+                                                   children[1].implicitWidth)
 
                 TransparentButton {
                     enabled: !LAUNCHER_ENABLE_GOOGLE_PLAY_LICENCE_CHECK
-                    text: (LAUNCHER_ENABLE_GOOGLE_PLAY_LICENCE_CHECK ? qsTr("Not available") : qsTr("Use .apk")).toUpperCase()
+                    text: (LAUNCHER_ENABLE_GOOGLE_PLAY_LICENCE_CHECK ? qsTr("Not available") : qsTr(
+                                                                           "Use .apk")).toUpperCase(
+                              )
                     textColor: "#0aa82f"
                     Layout.preferredWidth: alternativeOptions.buttonWidth
                     font.pointSize: 12
@@ -86,12 +89,11 @@ Item {
                     textColor: "#0aa82f"
                     Layout.preferredWidth: alternativeOptions.buttonWidth
                     font.pointSize: 12
-                    onClicked: Qt.openUrlExternally("https://mcpelauncher.readthedocs.io/en/latest/index.html")
+                    onClicked: Qt.openUrlExternally(
+                                   "https://mcpelauncher.readthedocs.io/en/latest/index.html")
                 }
-
             }
         }
-
     }
 
     CenteredRectangle {
@@ -118,11 +120,8 @@ Item {
                 Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
                 Layout.topMargin: 20
             }
-
         }
-
     }
-
 
     Text {
         text: "This is an unofficial Linux launcher for the Minecraft Bedrock codebase.\nThis project is not affiliated with Minecraft, Mojang or Microsoft."
@@ -168,8 +167,8 @@ Item {
 
     Connections {
         target: googleLoginHelper
-        onAccountAcquireFinished: function(acc) {
-            acquiringAccount = false;
+        onAccountAcquireFinished: function (acc) {
+            acquiringAccount = false
             if (acc)
                 root.finished()
         }
@@ -178,7 +177,7 @@ Item {
     Connections {
         target: window
         onClosing: {
-            application.quit();
+            application.quit()
         }
     }
 }

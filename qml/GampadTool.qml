@@ -16,7 +16,9 @@ Window {
     title: qsTr("Gamepad Tool")
 
     property var margin: 10
-    property var hasGamepad: GamepadManager.gamepads.length > 0 && control.currentIndex >= 0 && control.currentIndex < GamepadManager.gamepads.length
+    property var hasGamepad: GamepadManager.gamepads.length > 0
+                             && control.currentIndex >= 0
+                             && control.currentIndex < GamepadManager.gamepads.length
 
     ScrollView {
         anchors.fill: parent
@@ -28,7 +30,6 @@ Window {
             width: gamepadTool.width
             Layout.fillWidth: true
 
-            
             MComboBox {
                 id: control
 
@@ -37,13 +38,13 @@ Window {
                 Layout.rightMargin: gamepadTool.margin
 
                 property var currentGamepad: ""
-                
+
                 model: {
-                    var ret = [];
+                    var ret = []
                     for (var i = 0; i < GamepadManager.gamepads.length; i++) {
-                        ret.push(GamepadManager.gamepads[i].name);
+                        ret.push(GamepadManager.gamepads[i].name)
                     }
-                    console.log(JSON.stringify(ret));
+                    console.log(JSON.stringify(ret))
                     return ret
                 }
 
@@ -66,23 +67,23 @@ Window {
 
                 Layout.fillWidth: true
 
-                onActivated: function(index) {
-                    currentGamepad = GamepadManager.gamepads[index].guid;
-                    console.log("onActivated: " + index + "/" + currentGamepad);
-                    currentIndex = index;
-                    console.log(currentIndex);
+                onActivated: function (index) {
+                    currentGamepad = GamepadManager.gamepads[index].guid
+                    console.log("onActivated: " + index + "/" + currentGamepad)
+                    currentIndex = index
+                    console.log(currentIndex)
                 }
 
                 onModelChanged: {
                     for (var i = 0; i < GamepadManager.gamepads.length; i++) {
-                        if(GamepadManager.gamepads[i].guid == currentGamepad) {
-                            console.log("onModelChanged: found ");
-                            currentIndex = i;
-                            break;
+                        if (GamepadManager.gamepads[i].guid == currentGamepad) {
+                            console.log("onModelChanged: found ")
+                            currentIndex = i
+                            break
                         }
                     }
-                    console.log("onModelChanged: " + currentGamepad);
-                    console.log("onModelChanged: " + currentIndex);
+                    console.log("onModelChanged: " + currentGamepad)
+                    console.log("onModelChanged: " + currentIndex)
                 }
             }
 
@@ -91,7 +92,8 @@ Window {
                 Layout.leftMargin: gamepadTool.margin
                 Layout.rightMargin: gamepadTool.margin
                 readOnly: true
-                text: gamepadTool.hasGamepad ? GamepadManager.gamepads[control.currentIndex].guid : qsTr("No Gamepad")
+                text: gamepadTool.hasGamepad ? GamepadManager.gamepads[control.currentIndex].guid : qsTr(
+                                                   "No Gamepad")
             }
 
             MTextField {
@@ -99,18 +101,20 @@ Window {
                 Layout.leftMargin: gamepadTool.margin
                 Layout.rightMargin: gamepadTool.margin
                 readOnly: true
-                text: gamepadTool.hasGamepad ? GamepadManager.gamepads[control.currentIndex].name : qsTr("No Gamepad")
+                text: gamepadTool.hasGamepad ? GamepadManager.gamepads[control.currentIndex].name : qsTr(
+                                                   "No Gamepad")
             }
 
             Text {
                 Layout.leftMargin: gamepadTool.margin
                 Layout.rightMargin: gamepadTool.margin
-                text: "Has a gamepad Mapping? " + (gamepadTool.hasGamepad && GamepadManager.gamepads[control.currentIndex].hasMapping ? "true" : "false")
+                text: "Has a gamepad Mapping? " + (gamepadTool.hasGamepad
+                                                   && GamepadManager.gamepads[control.currentIndex].hasMapping ? "true" : "false")
             }
 
             Repeater {
                 id: inputRepeater
-                model: [ "a", "b", "x", "y", "leftshoulder", "rightshoulder", "righttrigger", "lefttrigger", "back", "start", "leftstick", "rightstick", "guide", "dpleft", "dpdown", "dpright", "dpup", "leftx", "lefty", "rightx", "righty" ]
+                model: ["a", "b", "x", "y", "leftshoulder", "rightshoulder", "righttrigger", "lefttrigger", "back", "start", "leftstick", "rightstick", "guide", "dpleft", "dpdown", "dpright", "dpup", "leftx", "lefty", "rightx", "righty"]
                 GamepadInputField {
                     Layout.leftMargin: gamepadTool.margin
                     Layout.rightMargin: gamepadTool.margin
@@ -126,19 +130,20 @@ Window {
                 Layout.rightMargin: gamepadTool.margin
                 readOnly: true
                 text: {
-                    if(gamepadTool.hasGamepad) {
-                        var fields = [];
-                        fields.push(GamepadManager.gamepads[control.currentIndex].guid);
-                        fields.push(GamepadManager.gamepads[control.currentIndex].name);
-                        for(var i = 0; i < inputRepeater.count; i++) {
-                            var key = inputRepeater.itemAt(i).key;
-                            if(key && key.length > 0) {
-                                fields.push(inputRepeater.itemAt(i).name + ":" + key);
+                    if (gamepadTool.hasGamepad) {
+                        var fields = []
+                        fields.push(GamepadManager.gamepads[control.currentIndex].guid)
+                        fields.push(GamepadManager.gamepads[control.currentIndex].name)
+                        for (var i = 0; i < inputRepeater.count; i++) {
+                            var key = inputRepeater.itemAt(i).key
+                            if (key && key.length > 0) {
+                                fields.push(inputRepeater.itemAt(
+                                                i).name + ":" + key)
                             }
                         }
-                        return fields.join(",");
+                        return fields.join(",")
                     }
-                    return qsTr("No Gamepad");
+                    return qsTr("No Gamepad")
                 }
             }
 
@@ -149,9 +154,12 @@ Window {
                 text: qsTr("Save Mapping to current Profile")
                 enabled: gamepadTool.hasGamepad
                 onClicked: {
-                    console.log(gamepadMapping.text);
-                    console.log(QmlUrlUtils.urlToLocalFile(window.getCurrentGameDataDir()));
-                    GamepadManager.saveMapping(QmlUrlUtils.urlToLocalFile(window.getCurrentGameDataDir()), gamepadMapping.text);
+                    console.log(gamepadMapping.text)
+                    console.log(QmlUrlUtils.urlToLocalFile(
+                                    window.getCurrentGameDataDir()))
+                    GamepadManager.saveMapping(QmlUrlUtils.urlToLocalFile(
+                                                   window.getCurrentGameDataDir(
+                                                       )), gamepadMapping.text)
                 }
             }
 
@@ -163,12 +171,16 @@ Window {
                 text: qsTr("Save Mapping to default Data directory")
                 enabled: gamepadTool.hasGamepad
                 onClicked: {
-                    console.log(gamepadMapping.text);
-                    console.log(QmlUrlUtils.urlToLocalFile(launcherSettings.gameDataDir));
-                    GamepadManager.saveMapping(QmlUrlUtils.urlToLocalFile(launcherSettings.gameDataDir), gamepadMapping.text);
+                    console.log(gamepadMapping.text)
+                    console.log(QmlUrlUtils.urlToLocalFile(
+                                    launcherSettings.gameDataDir))
+                    GamepadManager.saveMapping(
+                                QmlUrlUtils.urlToLocalFile(
+                                    launcherSettings.gameDataDir),
+                                gamepadMapping.text)
                 }
             }
-            
+
             Image {
                 id: buttons
                 smooth: false
@@ -189,9 +201,7 @@ Window {
                         text: qsTr("Close")
                         onClicked: gamepadTool.close()
                     }
-
                 }
-
             }
         }
     }

@@ -33,18 +33,24 @@ GridLayout {
         text: qsTr("Open Worlds")
         Layout.columnSpan: 1
         Layout.fillWidth: true
-        onClicked: Qt.openUrlExternally(window.getCurrentGameDataDir() + "/games/com.mojang/minecraftWorlds")
+        onClicked: Qt.openUrlExternally(
+                       window.getCurrentGameDataDir(
+                           ) + "/games/com.mojang/minecraftWorlds")
     }
     MButton {
         text: qsTr("Open Resource Packs")
         Layout.columnSpan: 1
         Layout.fillWidth: true
-        onClicked: Qt.openUrlExternally(window.getCurrentGameDataDir() + "/games/com.mojang/resource_packs")
+        onClicked: Qt.openUrlExternally(
+                       window.getCurrentGameDataDir(
+                           ) + "/games/com.mojang/resource_packs")
     }
     MButton {
         text: qsTr("Open Behavior Packs")
         Layout.columnSpan: 1
         Layout.fillWidth: true
-        onClicked: Qt.openUrlExternally(window.getCurrentGameDataDir() + "/games/com.mojang/behavior_packs")
+        onClicked: Qt.openUrlExternally(
+                       window.getCurrentGameDataDir(
+                           ) + "/games/com.mojang/behavior_packs")
     }
 }

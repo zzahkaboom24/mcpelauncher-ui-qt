@@ -19,5 +19,4 @@ Rectangle {
         width: parent.width - rectangle.xPadding * 2
         height: childrenRect.height
     }
-
 }

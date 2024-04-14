@@ -8,7 +8,7 @@ import io.mrarm.mcpelauncher 1.0
 
 LauncherBase {
 
-    signal finished()
+    signal finished
     id: rowLayout
     spacing: 0
 
@@ -42,6 +42,5 @@ LauncherBase {
                 rowLayout.finished()
             }
         }
-
     }
 }

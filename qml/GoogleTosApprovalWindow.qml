@@ -15,12 +15,14 @@ Window {
 
     signal done(bool approved, bool marketing)
 
-    width: Math.min(layout.implicitWidth + layout.anchors.leftMargin + layout.anchors.rightMargin, 420)
+    width: Math.min(
+               layout.implicitWidth + layout.anchors.leftMargin + layout.anchors.rightMargin,
+               420)
     height: layout.implicitHeight + layout.anchors.topMargin + layout.anchors.bottomMargin
     flags: Qt.Dialog
     title: "Google Play ToS approval"
 
-    onClosing: function() {
+    onClosing: function () {
         done(tosApproved, marketingApproved)
         tosApproved = false
     }
@@ -52,7 +54,7 @@ Window {
 
             Button {
                 text: "Agree"
-                onClicked: function() {
+                onClicked: function () {
                     tosApproved = true
                     close()
                 }
@@ -60,14 +62,11 @@ Window {
 
             Button {
                 text: "Disagree"
-                onClicked: function() {
+                onClicked: function () {
                     tosApproved = false
                     close()
                 }
             }
-
         }
-
     }
-
 }

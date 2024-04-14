@@ -20,7 +20,6 @@ Window {
         anchors.fill: parent
     }
 
-
     GoogleLoginHelper {
         id: googleLoginHelperInstance
         includeIncompatible: launcherSettings.showUnsupported
@@ -49,12 +48,13 @@ Window {
         id: playApi
         login: googleLoginHelperInstance
 
-        onInitError: function(err) {
-            playDownloadError.text = qsTr("Please login again, Details:<br/>%1").arg(err);
+        onInitError: function (err) {
+            playDownloadError.text = qsTr(
+                        "Please login again, Details:<br/>%1").arg(err)
             playDownloadError.open()
         }
 
-        onTosApprovalRequired: function(tos, marketing) {
+        onTosApprovalRequired: function (tos, marketing) {
             googleTosApprovalWindow.tosText = tos
             googleTosApprovalWindow.marketingText = marketing
             googleTosApprovalWindow.show()
@@ -88,9 +88,9 @@ Window {
             googleLoginHelper: googleLoginHelperInstance
             onFinished: {
                 if (needsToLogIn()) {
-                    stackView.push(panelLogin);
+                    stackView.push(panelLogin)
                 } else {
-                    stackView.push(panelMain);
+                    stackView.push(panelMain)
                 }
             }
             hasUpdate: window.hasUpdate
@@ -161,14 +161,16 @@ Window {
     GameLauncher {
         id: gameLauncher
         onLaunchFailed: {
-            exited();
-            showLaunchError(qsTr("Could not execute the game launcher. Please make sure it's dependencies are properly installed.<br><a href=\"%1\">Click here for more information Linux</a>").arg("https://github.com/minecraft-linux/mcpelauncher-manifest/issues/796"))
+            exited()
+            showLaunchError(
+                        qsTr("Could not execute the game launcher. Please make sure it's dependencies are properly installed.<br><a href=\"%1\">Click here for more information Linux</a>").arg(
+                            "https://github.com/minecraft-linux/mcpelauncher-manifest/issues/796"))
         }
         onStateChanged: {
             if (!running)
-                exited();
+                exited()
             if (crashed) {
-                application.setVisibleInDock(true);
+                application.setVisibleInDock(true)
                 gameLogWindow.show()
                 gameLogWindow.requestActivate()
             }
@@ -177,8 +179,8 @@ Window {
             corruptedInstallDialog.open()
         }
         function exited() {
-            application.setVisibleInDock(true);
-            window.show();
+            application.setVisibleInDock(true)
+            window.show()
         }
     }
 
@@ -195,11 +197,11 @@ Window {
         }
 
         onIgnoreClicked: {
-            if(window.visible) {
-                window.hide();
+            if (window.visible) {
+                window.hide()
             }
-            if(gameLogWindow.visible) {
-                gameLogWindow.hide();
+            if (gameLogWindow.visible) {
+                gameLogWindow.hide()
             }
         }
     }
@@ -224,22 +226,23 @@ Window {
 
     Connections {
         target: googleLoginHelperInstance
-        onLoginError: function(err) {
-            playDownloadError.text = qsTr("The Launcher failed to sign you in\nPlease login again\n%1").arg(err);
+        onLoginError: function (err) {
+            playDownloadError.text = qsTr(
+                        "The Launcher failed to sign you in\nPlease login again\n%1").arg(
+                        err)
             playDownloadError.open()
         }
     }
 
-
     Connections {
         target: window
         onClosing: {
-            if(!gameLogWindow.visible) {
+            if (!gameLogWindow.visible) {
                 if (gameLauncher.running) {
                     close.accepted = false
                     closeRunningDialog.open()
                 } else {
-                    application.quit();
+                    application.quit()
                 }
             }
         }
@@ -248,58 +251,62 @@ Window {
     Connections {
         target: gameLogWindow
         onClosing: {
-            if(!window.visible) {
+            if (!window.visible) {
                 if (gameLauncher.running) {
                     close.accepted = false
                     closeRunningDialog.open()
                 } else {
-                    application.quit();
+                    application.quit()
                 }
             } else {
-                gameLauncher.logDetached();
+                gameLauncher.logDetached()
             }
         }
     }
 
     function needsToLogIn() {
-        return googleLoginHelperInstance.account == null && versionManagerInstance.versions.size === 0;
+        return googleLoginHelperInstance.account == null
+                && versionManagerInstance.versions.size === 0
     }
 
     Component.onCompleted: {
-        if(launcherSettings.checkForUpdates) {
-            updateChecker.checkForUpdates();
+        if (launcherSettings.checkForUpdates) {
+            updateChecker.checkForUpdates()
         }
-        versionManagerInstance.archivalVersions.versionsChanged.connect(function() {
-            isVersionsInitialized = true;
-            console.log("Versionslist initialized");
-        });
-        versionManagerInstance.downloadLists(googleLoginHelperInstance.getAbis(true), launcherSettings.versionsFeedBaseUrl);
-        if(LAUNCHER_CHANGE_LOG.length !== 0 && launcherSettings.lastVersion < LAUNCHER_VERSION_CODE) {
-            stackView.push(panelChangelog);
+        versionManagerInstance.archivalVersions.versionsChanged.connect(
+                    function () {
+                        isVersionsInitialized = true
+                        console.log("Versionslist initialized")
+                    })
+        versionManagerInstance.downloadLists(
+                    googleLoginHelperInstance.getAbis(true),
+                    launcherSettings.versionsFeedBaseUrl)
+        if (LAUNCHER_CHANGE_LOG.length !== 0
+                && launcherSettings.lastVersion < LAUNCHER_VERSION_CODE) {
+            stackView.push(panelChangelog)
         } else {
-            next();
+            next()
         }
     }
 
     function next() {
         if (!googleLoginHelperInstance.isSupported()) {
-            stackView.push(panelError);
+            stackView.push(panelError)
         } else {
-            defaultnext();
+            defaultnext()
         }
     }
 
     function defaultnext() {
         if (needsToLogIn()) {
-            stackView.push(panelLogin);
+            stackView.push(panelLogin)
         } else {
-            stackView.push(panelMain);
+            stackView.push(panelMain)
         }
     }
 
     function showLaunchError(message) {
         errorDialog.text = message
-        errorDialog.open();
+        errorDialog.open()
     }
-
 }
