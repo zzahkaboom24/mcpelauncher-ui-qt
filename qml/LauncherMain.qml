@@ -154,10 +154,6 @@ LauncherBase {
                     playVerChannel.playApi = playApiInstance
                 } else {
                     if (needsDownload()) {
-                        if (googleLoginHelper.account === null) {
-                            launcherSettingsWindow.show()
-                            return
-                        }
                         playDownloadTask.versionCode = getDownloadVersionCode()
                         if (playDownloadTask.versionCode === 0)
                             return
