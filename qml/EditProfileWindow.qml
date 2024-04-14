@@ -75,7 +75,7 @@ Window {
                 property var extraVersionName: null
                 property var hideLatest: googleLoginHelper.hideLatest
                 property var data: []
-                property var update: () => {
+                property var update: function() {
                                          data = []
                                          versionsmodel.clear()
                                          var abis = googleLoginHelper.getAbis(launcherSettings.showUnsupported)
