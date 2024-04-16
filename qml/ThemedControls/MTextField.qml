@@ -1,11 +1,10 @@
-import QtQuick 2.0
+import QtQuick 2.9
 import QtQuick.Templates 2.1 as T
 
 T.TextField {
     id: control
 
     padding: 8
-    implicitWidth: contentItem.implicitWidth + leftPadding + rightPadding
     implicitHeight: 35
     verticalAlignment: TextInput.AlignVCenter
     font.pointSize: 10

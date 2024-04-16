@@ -1,10 +1,10 @@
-import QtQuick 2.0
+import QtQuick 2.9
 import QtQuick.Templates 2.1 as T
 
 T.TabButton {
     id: control
     padding: 15
-    implicitWidth: 15 + implicitContentWidth + leftPadding + rightPadding
+    implicitWidth: 15 + control.contentItem.implicitWidth + leftPadding + rightPadding
     implicitHeight: 40
     anchors.bottom: parent.bottom
 

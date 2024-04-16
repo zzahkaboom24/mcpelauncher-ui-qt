@@ -1,6 +1,6 @@
-import QtQuick
-import QtQuick.Layouts
-import QtQuick.Templates as T
+import QtQuick 2.9
+import QtQuick.Layouts 1.2
+import QtQuick.Templates 2.1 as T
 
 T.Button {
     id: control
@@ -8,7 +8,7 @@ T.Button {
     property alias showText: text.visible
 
     implicitHeight: 50
-    implicitWidth: implicitContentWidth
+    implicitWidth: control.contentItem.implicitWidth
 
     background: Rectangle {
         color: "#eee"

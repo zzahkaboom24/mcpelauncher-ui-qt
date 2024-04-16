@@ -124,6 +124,7 @@ Window {
     TroubleshooterWindow {
         id: troubleshooterWindow
         googleLoginHelper: googleLoginHelperInstance
+        playVerChannel: playVerChannelInstance
     }
 
     GoogleTosApprovalWindow {

@@ -1,4 +1,4 @@
-import QtQuick 2.0
+import QtQuick 2.9
 import QtQuick.Controls 2.2
 import QtQuick.Templates 2.1 as T
 
@@ -29,7 +29,7 @@ T.ComboBox {
     delegate: ItemDelegate {
         width: control.width
         contentItem: Text {
-            text: modelData
+            text: control.textRole ? (Array.isArray(control.model) ? modelData[control.textRole] : model[control.textRole]) : modelData
             color: "#fff"
             font.pointSize: 10
             elide: Text.ElideRight
@@ -75,7 +75,7 @@ T.ComboBox {
     popup: T.Popup {
         y: control.height
         width: control.width
-        height: Math.min(contentItem.implicitHeight + topPadding + bottomPadding, control.Window.height - topMargin - bottomMargin)
+        height: Math.min(contentItem.implicitHeight + topPadding + bottomPadding, 200)
         topMargin: 6
         bottomMargin: 6
         padding: 4
