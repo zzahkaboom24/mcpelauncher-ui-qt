@@ -1,6 +1,6 @@
-import QtQuick
-import QtQuick.Layouts
-import QtQuick.Controls
+import QtQuick 2.9
+import QtQuick.Layouts 1.2
+import QtQuick.Controls 2.0
 import "ThemedControls"
 
 RowLayout {
@@ -23,14 +23,14 @@ RowLayout {
                 iconSource: "qrc:/Resources/icon-home.png"
                 showText: useWideLayout
                 onClicked: updateIndex(0)
-                checked: currentIndex == 0
+                checked: currentIndex === 0
             }
             MSideBarItem {
                 text: qsTr("News")
                 iconSource: "qrc:/Resources/icon-news.png"
                 showText: useWideLayout
                 onClicked: updateIndex(1)
-                checked: currentIndex == 1
+                checked: currentIndex === 1
             }
             Item {
                 Layout.fillHeight: true
@@ -40,7 +40,7 @@ RowLayout {
                 iconSource: "qrc:/Resources/icon-settings.png"
                 showText: useWideLayout
                 onClicked: updateIndex(2)
-                checked: currentIndex == 2
+                checked: currentIndex === 2
             }
         }
     }
@@ -83,8 +83,14 @@ RowLayout {
     }
 
     function updateIndex(index) {
-        if (index === currentIndex)
+        console.log("index=" + index)
+        console.log("currentIndex=" + currentIndex)
+        if (index === currentIndex) {
+            console.log("Nothing changed")
+            currentIndex = -1
+            currentIndex = index
             return
+        }
 
         mainStackView.pop(null)
 

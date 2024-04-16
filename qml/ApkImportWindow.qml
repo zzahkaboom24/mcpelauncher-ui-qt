@@ -1,4 +1,4 @@
-import QtQuick 2.4
+import QtQuick 2.9
 
 import QtQuick.Layouts 1.2
 import QtQuick.Window 2.2

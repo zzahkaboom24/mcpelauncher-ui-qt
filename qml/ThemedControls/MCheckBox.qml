@@ -18,6 +18,7 @@ T.CheckBox {
         border.color: control.down ? "#888" : (control.hovered ? "#666" : "#555")
 
         Canvas {
+            id: canvas
             anchors.centerIn: parent
             width: 10
             height: 10
@@ -51,6 +52,6 @@ T.CheckBox {
         color: "#fff"
         horizontalAlignment: Text.AlignLeft
         verticalAlignment: Text.AlignVCenter
-        leftPadding: implicitIndicatorWidth + 5
+        leftPadding: indicator.implicitWidth + 5
     }
 }

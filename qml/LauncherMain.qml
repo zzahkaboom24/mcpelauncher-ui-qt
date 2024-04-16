@@ -3,6 +3,7 @@ import QtQuick.Window 2.2
 import QtQuick.Dialogs 1.2
 import QtQuick.Layouts 1.2
 import QtQuick.Controls 2.2
+import Qt.labs.folderlistmodel 2.0
 import "ThemedControls"
 import io.mrarm.mcpelauncher 1.0
 
@@ -10,7 +11,7 @@ LauncherBase {
     property GoogleLoginHelper googleLoginHelper
     property VersionManager versionManager
     property ProfileManager profileManager
-    property GoogleVersionChannel playVerChannelInstance
+    property GoogleVersionChannel playVerChannel
     property GooglePlayApi playApiInstance
     property bool isVersionsInitialized: false
     progressbarVisible: playDownloadTask.active || apkExtractionTask.active
@@ -36,13 +37,12 @@ LauncherBase {
         Layout.fillWidth: true
         Layout.fillHeight: true
         id: backgroundArt
-        anchors.fill: parent
         source: wallpaperFolderModel.getRandomImage()
         smooth: true
         fillMode: Image.PreserveAspectCrop
         Image {
             id: launcherLogo
-            source: "qrc:/Resources/mcpelauncher-logo.svg"
+            source: "qrc:/Resources/mcpelauncher-logo.png"
             smooth: false
             y: 30
             width: parent.width

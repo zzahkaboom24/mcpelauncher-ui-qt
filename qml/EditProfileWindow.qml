@@ -1,4 +1,4 @@
-import QtQuick 2.4
+import QtQuick 2.9
 
 import QtQuick.Layouts 1.2
 import QtQuick.Window 2.2
@@ -75,7 +75,7 @@ Window {
                 property var extraVersionName: null
                 property var hideLatest: googleLoginHelper.hideLatest
                 property var data: []
-                property var update: () => {
+                property var update: function() {
                                          data = []
                                          versionsmodel.clear()
                                          var abis = googleLoginHelper.getAbis(launcherSettings.showUnsupported)
