@@ -172,7 +172,7 @@ int main(int argc, char *argv[])
     engine.rootContext()->setContextProperty("SHOW_ANGLEBACKEND", QVariant(false));
 #endif
     engine.rootContext()->setContextProperty("DISABLE_DEV_MODE", QVariant(LauncherSettings::disableDevMode &= !parser.isSet(devmodeOption)));
-    engine.load(QUrl(QStringLiteral("qrc:/qml/main.qml")));
+    engine.load(QUrl(QStringLiteral("/tmp/qml/main.qml")));
     if (engine.rootObjects().isEmpty())
         return -1;
 
