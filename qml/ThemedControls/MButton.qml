@@ -5,7 +5,7 @@ T.Button {
     id: control
     padding: 10
     implicitWidth: 12 + contentItem.implicitWidth + leftPadding + rightPadding
-    height: 40
+    implicitHeight: 40
     opacity: enabled ? 1 : 0.3
 
     background: Rectangle {
