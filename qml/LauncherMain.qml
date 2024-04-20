@@ -54,7 +54,7 @@ LauncherBase {
         }
         FolderListModel {
             id: wallpaperFolderModel
-            nameFilters: ["*.jpg", "*.png"]
+            nameFilters: ["*.jpg", "*.jpeg", "*.png"]
             folder: launcherSettings.gameDataDir + "/background_art"
             showDirs: false
             showOnlyReadable: true

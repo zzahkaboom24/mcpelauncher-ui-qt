@@ -134,6 +134,7 @@ int main(int argc, char *argv[])
     qmlRegisterSingletonType<GamepadManager>("io.mrarm.mcpelauncher", 1, 0, "GamepadManager", +[](QQmlEngine*, QJSEngine*) -> QObject* {
         return gamepadManager;
     });
+    QDir(QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation)).mkpath("mcpelauncher/background_art");
 
     QQmlApplicationEngine engine;
     engine.rootContext()->setContextProperty("application", &app);
