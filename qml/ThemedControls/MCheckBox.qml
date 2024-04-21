@@ -41,6 +41,10 @@ T.CheckBox {
                 context.stroke()
             }
         }
+
+        FocusBorder {
+            visible: control.visualFocus
+        }
     }
 
     contentItem: Text {
