@@ -49,5 +49,6 @@
         <file>qml/GampadTool.qml</file>
         <file>qml/GamepadInputField.qml</file>
         <file>LICENSE</file>
+        <file>qml/LauncherUnlock.qml</file>
     </qresource>
 </RCC>

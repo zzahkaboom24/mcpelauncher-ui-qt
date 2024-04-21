@@ -14,6 +14,7 @@ set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTORCC ON)
 
 find_package(Qt6 COMPONENTS Core Quick Concurrent Svg REQUIRED)
+find_package(OpenSSL)
 
 option(ENABLE_UPDATE_CHECK "Enables update checking with a remote server")
 set(UPDATE_CHECK_URL "" CACHE STRING "Specify the URL for the server to check for updates on")
@@ -48,7 +49,7 @@ if (NOT "${LAUNCHER_VERSIONDB_PATH}" STREQUAL "")
     set(RESOURCES ${CMAKE_CURRENT_BINARY_DIR}/archivalversionlist.qrc ${RESOURCES})
 endif()
 
-add_executable(${PROJECT_NAME} main.cpp launcherapp.cpp launcherapp.h googleloginhelper.cpp googleloginhelper.h googleaccount.h versionmanager.cpp versionmanager.h apkextractiontask.cpp apkextractiontask.h googleplayapi.cpp googleplayapi.h googleversionchannel.cpp googleversionchannel.h googleapkdownloadtask.cpp googleapkdownloadtask.h gamelauncher.cpp gamelauncher.h profilemanager.cpp profilemanager.h qmlurlutils.h archivalversionlist.cpp archivalversionlist.h launchersettings.h troubleshooter.cpp troubleshooter.h updatechecker.cpp updatechecker.h supportedandroidabis.cpp supportedandroidabis.h cpuid.cpp cpuid.h gamepad.h ${RESOURCES})
+add_executable(${PROJECT_NAME} main.cpp launcherapp.cpp launcherapp.h googleloginhelper.cpp googleloginhelper.h googleaccount.h versionmanager.cpp versionmanager.h apkextractiontask.cpp apkextractiontask.h googleplayapi.cpp googleplayapi.h googleversionchannel.cpp googleversionchannel.h googleapkdownloadtask.cpp googleapkdownloadtask.h gamelauncher.cpp gamelauncher.h profilemanager.cpp profilemanager.h qmlurlutils.h archivalversionlist.cpp archivalversionlist.h launchersettings.h troubleshooter.cpp troubleshooter.h updatechecker.cpp updatechecker.h supportedandroidabis.cpp supportedandroidabis.h cpuid.cpp cpuid.h gamepad.h encryption.h encrypted_file_login_cache.cpp encrypted_file_login_cache.h ${RESOURCES})
 if (ENABLE_UPDATE_CHECK)
     target_compile_definitions(${PROJECT_NAME} PUBLIC UPDATE_CHECK UPDATE_CHECK_BUILD_ID=${UPDATE_CHECK_BUILD_ID} UPDATE_CHECK_URL="${UPDATE_CHECK_URL}")
 endif()
@@ -90,6 +91,13 @@ if (APPLE)
 endif()
 
 target_link_libraries(${PROJECT_NAME} Qt6::Core Qt6::Quick Qt6::Svg Qt6::Concurrent playdl-signin-ui-qt-lib mcpelauncher-extract-lib mcpelauncher-common mcpelauncher-apkinfo file-util gplayapi)
+
+if(OpenSSL_FOUND)
+    target_link_libraries(${PROJECT_NAME} OpenSSL::Crypto)
+    target_sources(${PROJECT_NAME} PUBLIC encryption.cpp)
+else()
+    target_sources(${PROJECT_NAME} PUBLIC encryption_stub.cpp)
+endif()
 
 if (ENABLE_APPIMAGE_UPDATE_CHECK)
     target_compile_definitions(${PROJECT_NAME} PUBLIC APPIMAGE_UPDATE_CHECK=1)

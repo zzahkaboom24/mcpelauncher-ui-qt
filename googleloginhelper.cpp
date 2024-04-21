@@ -7,30 +7,54 @@
 #include <QtConcurrent>
 #include "supportedandroidabis.h"
 #include "launchersettings.h"
+#include "encryption.h"
 
 std::string GoogleLoginHelper::getTokenCachePath() {
     return QDir(QStandardPaths::writableLocation(QStandardPaths::CacheLocation)).filePath("playapi_token_cache.conf").toStdString();
 }
 
 GoogleLoginHelper::GoogleLoginHelper() : loginCache(getTokenCachePath()), login(device, loginCache) {
+    unlockkey = settings.value("key").toString();
+    loadAccount();
+}
+
+GoogleLoginHelper::~GoogleLoginHelper() {
+    delete window;
+}
+
+void GoogleLoginHelper::loadAccount() {
+    if (hasAccount) {
+        return;
+    }
+    hasEncryptedCredentials = false;
     settings.beginGroup("googlelogin");
     if (settings.contains("identifier")) {
-        currentAccount.setAccountIdentifier(settings.value("identifier").toString());
-        currentAccount.setAccountUserId(settings.value("userId").toString());
-        currentAccount.setAccountToken(settings.value("token").toString());
+        Encryption enc;
+        auto got = settings.value("encrypted", "true").toString().toStdString();
+        if(enc.Decrypt(got, unlockkey.toStdString()) == "true") {
+            currentAccount.setAccountIdentifier(QString::fromStdString(enc.Decrypt(settings.value("identifier").toString().toStdString(), unlockkey.toStdString())));
+            currentAccount.setAccountUserId(QString::fromStdString(enc.Decrypt(settings.value("userId").toString().toStdString(), unlockkey.toStdString())));
+            currentAccount.setAccountToken(QString::fromStdString(enc.Decrypt(settings.value("token").toString().toStdString(), unlockkey.toStdString())));
+        } else if(got == "true") {
+            currentAccount.setAccountIdentifier(settings.value("identifier").toString());
+            currentAccount.setAccountUserId(settings.value("userId").toString());
+            currentAccount.setAccountToken(settings.value("token").toString());
+        } else {
+            hasEncryptedCredentials = true;
+        }
+
         hasAccount = currentAccount.isValid();
         if (hasAccount) {
             login.set_token(currentAccount.accountIdentifier().toStdString(), currentAccount.accountToken().toStdString());
+        } else {
+            settings.endGroup();
+            return;
         }
     }
     settings.endGroup();
     loadDeviceState();
     includeIncompatible = LauncherSettings().showUnsupported();
     updateDevice();
-}
-
-GoogleLoginHelper::~GoogleLoginHelper() {
-    delete window;
 }
 
 void GoogleLoginHelper::loadDeviceState() {
@@ -73,6 +97,14 @@ void GoogleLoginHelper::acquireAccount(QWindow *parent) {
 void GoogleLoginHelper::onLoginFinished(int code) {
     if (code == QDialog::Accepted) {
         try {
+            unlockkey = window->encryptionToken();
+            Encryption enc;
+            if(unlockkey.isEmpty()) {
+                unlockkey = QString::fromStdString(enc.RandomKey());
+                settings.setValue("key", unlockkey);
+            }
+            loginCache.clear();
+            loginCache.setKey(unlockkey.toStdString());
             login.perform_with_access_token(window->accountToken().toStdString(), window->accountIdentifier().toStdString(), true)->call();
             currentAccount.setAccountIdentifier(QString::fromStdString(login.get_email()));
             currentAccount.setAccountUserId(window->accountUserId());
@@ -80,9 +112,10 @@ void GoogleLoginHelper::onLoginFinished(int code) {
             hasAccount = currentAccount.isValid();
             if (hasAccount) {
                 settings.beginGroup("googlelogin");
-                settings.setValue("identifier", currentAccount.accountIdentifier());
-                settings.setValue("userId", currentAccount.accountUserId());
-                settings.setValue("token", currentAccount.accountToken());
+                settings.setValue("encrypted", QString::fromStdString(enc.Encrypt("true", unlockkey.toStdString())));
+                settings.setValue("identifier", QString::fromStdString(enc.Encrypt(currentAccount.accountIdentifier().toStdString(), unlockkey.toStdString())));
+                settings.setValue("userId", QString::fromStdString(enc.Encrypt(currentAccount.accountUserId().toStdString(), unlockkey.toStdString())));
+                settings.setValue("token", QString::fromStdString(enc.Encrypt(currentAccount.accountToken().toStdString(), unlockkey.toStdString())));
                 settings.endGroup();
                 saveDeviceState();
                 accountAcquireFinished(&currentAccount);
