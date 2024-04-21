@@ -9,10 +9,22 @@ MComboBox {
 
     signal addProfileSelected
 
+    function updateModel() {
+        var profilesModel = profilesModelComponent.createObject(parent)
+        for (var i = 0; i < profiles.length; i++)
+            profilesModel.append({ "name": profiles[i].name })
+        profilesModel.append({ "name": "Add new profile..." })
+        console.log("updateModel")
+        return profilesModel
+    }
+
     function getProfile() {
         return currentProfile
     }
-    function setProfile(profile) {
+    function setProfile(profile, noupdate) {
+        if(!noupdate) {
+            control.model = updateModel();
+        }
         for (var i = 0; i < profiles.length; i++) {
             if (profiles[i] === profile) {
                 if (currentIndex !== i)
@@ -35,12 +47,11 @@ MComboBox {
 
     id: control
 
-    model: {
-        var ret = []
-        for (var i = 0; i < profiles.length; i++)
-            ret.push(profiles[i].name)
-        ret.push("Add new profile...")
-        return ret
+    Component {
+        id: profilesModelComponent
+        ListModel {
+
+        }
     }
 
     delegate: ItemDelegate {
@@ -85,7 +96,7 @@ MComboBox {
     }
 
     onModelChanged: {
-        if (!setProfile(currentProfile))
+        if (!setProfile(currentProfile, true))
             currentIndex = 0
     }
 }
