@@ -5,7 +5,7 @@
 #include <QSettings>
 #include <playapi/login.h>
 #include <playapi/device_info.h>
-#include <playapi/file_login_cache.h>
+#include "encrypted_file_login_cache.h"
 #include "googleaccount.h"
 
 class QWindow;
@@ -17,17 +17,21 @@ class GoogleLoginHelper : public QObject {
     Q_PROPERTY(bool includeIncompatible READ getIncludeIncompatible WRITE setIncludeIncompatible)
     Q_PROPERTY(QString singleArch READ getSingleArch WRITE setSingleArch)
     Q_PROPERTY(bool hideLatest READ hideLatest NOTIFY accountInfoChanged)
+    Q_PROPERTY(bool hasEncryptedCredentials READ gethasEncryptedCredentials NOTIFY accountInfoChanged)
+    Q_PROPERTY(QString unlockkey READ getUnlockkey WRITE setUnlockkey NOTIFY accountInfoChanged)
 
 private:
     QSettings settings;
     GoogleLoginWindow* window = nullptr;
     GoogleAccount currentAccount;
     playapi::device_info device;
-    playapi::file_login_cache loginCache;
+    playapi::encrypted_file_login_cache loginCache;
     playapi::login_api login;
     bool hasAccount = false;
     bool includeIncompatible = false;
+    bool hasEncryptedCredentials = false;
     QString singleArch;
+    QString unlockkey;
 
     static std::string getTokenCachePath();
 
@@ -43,6 +47,15 @@ private:
     QString getSingleArch() {
         return singleArch;
     }
+    QString getUnlockkey() {
+        return singleArch;
+    }
+
+    bool gethasEncryptedCredentials() {
+        return hasEncryptedCredentials;
+    }
+
+    void loadAccount();
 
     void updateDevice();
 
@@ -57,6 +70,13 @@ private:
         if (this->singleArch != singleArch) {
             this->singleArch = singleArch;
             updateDevice();
+        }
+    }
+
+    void setUnlockkey(QString key) {
+        if (this->unlockkey != key) {
+            this->unlockkey = key;
+            loadAccount();
         }
     }
 
@@ -83,7 +103,6 @@ public slots:
     QString GetSupportReport();
 
     bool isSupported();
-
 signals:
     void accountAcquireFinished(GoogleAccount* account);
 

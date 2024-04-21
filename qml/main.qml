@@ -12,6 +12,7 @@ Window {
     title: qsTr("Linux Minecraft Launcher")
     color: "#333333"
     property bool hasUpdate: false
+    property bool hasAskedForKey: false
     property string updateDownloadUrl: ""
     property bool isVersionsInitialized: false
     property string currentGameDataDir: ""
@@ -88,6 +89,17 @@ Window {
             updateDownloadUrl: window.updateDownloadUrl
         }
     }
+
+    Component {
+        id: panelUnlock
+
+        LauncherUnlock {
+            onFinished: {
+                next()
+            }
+        }
+    }
+
 
     Component {
         id: panelChangelog
@@ -242,7 +254,7 @@ Window {
     }
 
     function needsToLogIn() {
-        return googleLoginHelperInstance.account == null && versionManagerInstance.versions.size === 0
+        return googleLoginHelperInstance.account == null && !googleLoginHelperInstance.hasEncryptedCredentials && versionManagerInstance.versions.size === 0
     }
 
     Component.onCompleted: {
@@ -264,6 +276,9 @@ Window {
     function next() {
         if (!googleLoginHelperInstance.isSupported()) {
             stackView.push(panelError)
+        } else if(googleLoginHelperInstance.hasEncryptedCredentials && !hasAskedForKey) {
+            hasAskedForKey = true
+            stackView.push(panelUnlock)
         } else {
             defaultnext()
         }
