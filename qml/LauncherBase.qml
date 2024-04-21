@@ -28,6 +28,26 @@ ColumnLayout {
         Layout.fillWidth: true
         title: qsTr("Unofficial *nix launcher for Minecraft")
     }
+    Rectangle {
+        z: 4
+        anchors.right: baseHeader.right
+        anchors.rightMargin: 10
+        anchors.topMargin: 10
+        anchors.top: rowLayout.top
+        width: children[0].implicitWidth + 10
+        height: children[0].implicitHeight + 10
+        color: "#333333"
+        radius: 10
+        visible: LAUNCHER_VERSION_NAME || false
+
+        Text {
+            anchors.centerIn: parent
+            color: "#fff"
+            font.pointSize: 8
+
+            text: qsTr("%1 (build %2)").arg(LAUNCHER_VERSION_NAME).arg(LAUNCHER_VERSION_CODE || "Unknown")
+        }
+    }
 
     Rectangle {
         Layout.alignment: Qt.AlignTop
