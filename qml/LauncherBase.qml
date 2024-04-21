@@ -30,13 +30,13 @@ ColumnLayout {
     Rectangle {
         z: 4
         anchors.right: baseHeader.right
-        anchors.rightMargin: 10
-        anchors.topMargin: 10
+        anchors.rightMargin: 2
+        anchors.topMargin: 2
         anchors.top: rowLayout.top
-        width: children[0].implicitWidth + 10
-        height: children[0].implicitHeight + 10
+        width: children[0].implicitWidth + 2
+        height: children[0].implicitHeight + 2
         color: "#333333"
-        radius: 10
+        radius: 4
         visible: LAUNCHER_VERSION_NAME || false
 
         Text {
