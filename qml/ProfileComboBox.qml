@@ -59,7 +59,7 @@ MComboBox {
 
         width: parent.width
         height: 32 + (separator.visible ? separator.height : 0)
-        text: modelData
+        text: control.textRole ? (Array.isArray(control.model) ? modelData[control.textRole] : model[control.textRole]) : modelData
         highlighted: control.highlightedIndex === index
 
         Rectangle {
@@ -84,7 +84,7 @@ MComboBox {
 
         background: Rectangle {
             anchors.fill: parent
-            color: (currentIndex == index) ? "#283" : (parent.hovered ? "#333" : "#1e1e1e")
+            color: highlighted ? "#283" : (parent.hovered ? "#333" : "#1e1e1e")
         }
     }
 

@@ -14,6 +14,9 @@ T.ComboBox {
     background: Rectangle {
         border.color: control.hovered ? "#666" : "#555"
         color: "#1e1e1e"
+        FocusBorder {
+            visible: control.visualFocus
+        }
     }
 
     contentItem: Text {
@@ -27,7 +30,7 @@ T.ComboBox {
     }
 
     delegate: ItemDelegate {
-        width: control.width
+        width: parent.width
         contentItem: Text {
             text: control.textRole ? (Array.isArray(control.model) ? modelData[control.textRole] : model[control.textRole]) : modelData
             color: "#fff"
@@ -37,9 +40,11 @@ T.ComboBox {
         }
         highlighted: control.highlightedIndex === index
         background: Rectangle {
-            anchors.fill: parent
-            color: parent.hovered ? "#333" : "#1e1e1e"
+            color: parent.hovered ? "#444" : highlighted ? "#333" : "#1e1e1e"
             radius: 2
+            FocusBorder {
+                visible: highlighted
+            }
         }
     }
 

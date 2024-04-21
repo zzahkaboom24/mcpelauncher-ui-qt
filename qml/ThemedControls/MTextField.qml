@@ -17,5 +17,9 @@ T.TextField {
         border.color: control.hovered ? "#666" : "#555"
         color: "#1e1e1e"
         radius: 2
+
+        FocusBorder {
+            visible: control.focus
+        }
     }
 }
