@@ -19,7 +19,7 @@ T.TextField {
         radius: 2
 
         FocusBorder {
-            visible: control.focus
+            visible: control.focus ? control.focusReason !== Qt.MouseFocusReason : false
         }
     }
 }
