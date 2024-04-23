@@ -116,7 +116,7 @@ ColumnLayout {
                         anchors.fill: parent
                         hoverEnabled: true
                         focus: true
-                        focusPolicy: "TabFocus"
+                        activeFocusOnTab: true
 
                         onEntered: hovered = true
                         onExited: hovered = false
