@@ -4,7 +4,7 @@ import QtQuick.Templates 2.1 as T
 T.TabButton {
     id: control
     padding: 15
-    implicitWidth: 15 + control.contentItem.implicitWidth + leftPadding + rightPadding
+    implicitWidth: 15 + fontMetrics.boundingRect(contentItem.text).width + leftPadding + rightPadding
     implicitHeight: 40
     anchors.bottom: parent.bottom
 
@@ -19,6 +19,12 @@ T.TabButton {
 
     background: FocusBorder {
         visible: control.visualFocus
+    }
+
+    FontMetrics {
+        id: fontMetrics
+        font.pointSize: contentItem.font.pointSize
+        font.bold: true
     }
 
     contentItem: Text {
