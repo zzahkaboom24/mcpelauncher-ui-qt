@@ -58,8 +58,8 @@ public:
     bool showBetaVersions() const { return !disableDevMode && settings.value("showBetaVersions", false).toBool(); }
     void setShowBetaVersions(bool value) { settings.setValue("showBetaVersions", value); emit settingsChanged(); }
 
-    int lastVersion() const { return settings.value("lastVersion", 0).toInt(); }
-    void setLastVersion(int value) { settings.setValue("lastVersion", value); emit settingsChanged(); }
+    long long lastVersion() const { return settings.value("lastVersion", 0).toLongLong(); }
+    void setLastVersion(long long value) { settings.setValue("lastVersion", value); emit settingsChanged(); }
 
     bool showNotifications() const { return settings.value("showNotifications", true).toBool(); }
     void setShowNotifications(bool value) { settings.setValue("showNotifications", value); emit settingsChanged(); }
