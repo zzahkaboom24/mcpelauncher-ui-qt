@@ -11,12 +11,16 @@ void encrypted_file_login_cache::load() {
     config c;
     {
         std::ifstream fs(path);
-        std::stringstream buf;
-        buf << fs.rdbuf();
-        Encryption enc;
-        std::stringstream out;
-        out << enc.Decrypt(buf.str(), key);
-        c.load(out);
+        if(key.empty()) {
+            c.load(fs);
+        } else {
+            std::stringstream buf;
+            buf << fs.rdbuf();
+            Encryption enc;
+            std::stringstream out;
+            out << enc.Decrypt(buf.str(), key);
+            c.load(out);
+        }
     }
     int n = c.get_int("token_count", 0);
     for (int i = 0; i < n; i++) {
@@ -44,9 +48,13 @@ void encrypted_file_login_cache::save() {
     c.set_int("token_count", count);
     {
         std::ofstream fs(path);
-        std::stringstream buf;
-        c.save(buf);
-        Encryption enc;
-        fs << enc.Encrypt(buf.str(), key);
+        if(key.empty()) {
+            c.save(fs);
+        } else {
+            std::stringstream buf;
+            c.save(buf);
+            Encryption enc;
+            fs << enc.Encrypt(buf.str(), key);
+        }
     }
 }
