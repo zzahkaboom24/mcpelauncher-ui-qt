@@ -18,7 +18,7 @@ class LauncherSettings : public QObject {
     Q_PROPERTY(bool showBetaVersions READ showBetaVersions WRITE setShowBetaVersions NOTIFY settingsChanged)
     Q_PROPERTY(bool downloadOnly READ downloadOnly WRITE setDownloadOnly NOTIFY settingsChanged)
     Q_PROPERTY(QString singleArch READ singleArch WRITE setSingleArch NOTIFY settingsChanged)
-    Q_PROPERTY(int lastVersion READ lastVersion WRITE setLastVersion NOTIFY settingsChanged)
+    Q_PROPERTY(long long lastVersion READ lastVersion WRITE setLastVersion NOTIFY settingsChanged)
     Q_PROPERTY(QUrl gameDataDir READ gameDataDir)
     Q_PROPERTY(QString versionsFeedBaseUrl READ versionsFeedBaseUrl WRITE setVersionsFeedBaseUrl NOTIFY settingsChanged)
     Q_PROPERTY(bool showNotifications READ showNotifications WRITE setShowNotifications NOTIFY settingsChanged)
@@ -59,7 +59,7 @@ public:
     void setShowBetaVersions(bool value) { settings.setValue("showBetaVersions", value); emit settingsChanged(); }
 
     long long lastVersion() const { return settings.value("lastVersion", 0).toLongLong(); }
-    void setLastVersion(long long value) { settings.setValue("lastVersion", value); emit settingsChanged(); }
+    void setLastVersion(long long value) { settings.setValue("lastVersion", QVariant(value)); emit settingsChanged(); }
 
     bool showNotifications() const { return settings.value("showNotifications", true).toBool(); }
     void setShowNotifications(bool value) { settings.setValue("showNotifications", value); emit settingsChanged(); }
