@@ -3,6 +3,7 @@ import QtQuick 2.9
 import QtQuick.Layouts 1.2
 import QtQuick.Window 2.2
 import QtQuick.Dialogs 1.2
+import QtQuick.Controls 2.0
 import QtQuick.Controls.Styles 1.4
 import "ThemedControls"
 import io.mrarm.mcpelauncher 1.0
@@ -290,6 +291,103 @@ Window {
                     }
                 }
             }
+
+            Text {
+                text: qsTr("Commandline")
+                color: "#fff"
+                font.pointSize: parent.labelFontSize
+            }
+
+            MTextField {
+                id: commandline
+                Layout.fillWidth: true
+            }
+
+            Text {
+                text: qsTr("Env Variables")
+                color: "#fff"
+                font.pointSize: parent.labelFontSize
+            }
+
+            Rectangle {
+                Layout.fillWidth: true
+                Layout.fillHeight: true
+                Layout.minimumHeight: 150
+                color: "#1e1e1e"
+
+                ListView {
+                    id: envs
+                    anchors.fill: parent
+                    anchors.margins: 4
+                    clip: true
+                    flickableDirection: Flickable.VerticalFlick
+                    model: ListModel {
+                    }
+                    Component.onCompleted: {
+                        envs.model.append({ key: "", value: "", add: true })
+                    }
+
+                    delegate:
+                        Rectangle  {
+                            width: parent.width
+                            height: del.implicitHeight
+                            MTextField {
+                                visible: !add
+                                text: key
+                                width: (parent.width - del.implicitWidth) / 2
+                                anchors.left: parent.left
+                                anchors.leftMargin: 0
+                                height: del.implicitHeight
+                                onEditingFinished: {
+                                    envs.model.set(index, { key: text, value: value })
+                                }
+                            }
+                            MTextField {
+                                visible: !add
+                                text: value
+                                width: (parent.width - del.implicitWidth) / 2
+                                anchors.right: parent.right
+                                anchors.rightMargin: 0 + del.implicitWidth
+                                height: del.implicitHeight
+                                onEditingFinished: {
+                                    envs.model.set(index, { key: key, value: text })
+                                }
+                            }
+                            MButton {
+                                visible: !add
+                                id: del
+                                anchors.right: parent.right
+                                anchors.rightMargin: 0
+                                Image {
+                                    anchors.centerIn: parent
+                                    source: "qrc:/Resources/icon-delete.png"
+                                    smooth: false
+                                }
+                                onClicked: {
+                                    console.log(index)
+                                    envs.model.remove(index, 1)
+                                }
+                            }
+                            MButton {
+                                visible: !!add
+                                anchors.right: parent.right
+                                anchors.rightMargin: 0
+                                anchors.left: parent.left
+                                anchors.leftMargin: 0
+                                text: qsTr("New Environment Variable")
+                                onClicked: {
+                                    console.log(index)
+                                    envs.model.insert(envs.model.count - 1, { key: "", value: "" })
+                                }
+                            }
+
+                        }
+                    highlightResizeVelocity: -1
+                    highlightMoveVelocity: -1
+                    currentIndex: -1
+                    ScrollBar.vertical: ScrollBar {}
+                }
+            }
         }
 
         Item {
@@ -309,6 +407,14 @@ Window {
                 MButton {
                     text: qsTr("Cancel")
                     onClicked: close()
+                }
+                MButton {
+                    text: qsTr("Save As")
+                    enabled: !profileName.enabled || profileName.text.length > 0 && profileName.text !== profile.name
+                    onClicked: {
+                        saveProfile(true)
+                        close()
+                    }
                 }
                 MButton {
                     text: qsTr("Save")
@@ -338,6 +444,10 @@ Window {
         windowSizeCheck.checked = false
         windowWidth.text = "720"
         windowHeight.text = "480"
+        if(envs.model.count > 1) {
+            envs.model.remove(0, envs.model.count - 1)
+        }
+        commandline.text = ""
     }
 
     function setProfile(p) {
@@ -407,9 +517,17 @@ Window {
         windowSizeCheck.checked = profile.windowCustomSize
         windowWidth.text = profile.windowWidth
         windowHeight.text = profile.windowHeight
+        if (envs.model.count > 1) {
+            envs.model.remove(0, envs.model.count - 1)
+        }
+        var keys = profile.env.keys()
+        for (var i = 0; i < keys.length; i++) {
+            envs.model.insert(envs.model.count - 1, { key: keys[i], value: profile.env[keys[i]], add: false })
+        }
+        commandline.text = profile.commandline
     }
 
-    function saveProfile() {
+    function saveProfile(saveAs) {
         if (!profileManager.validateName(profileName.text)) {
             profileInvalidNameDialog.open()
             return
@@ -422,7 +540,7 @@ Window {
                     return
                 }
             }
-            if (profile == null)
+            if (profile == null || saveAs)
                 profile = profileManager.createProfile(profileName.text)
             else
                 profile.setName(profileName.text)
@@ -448,6 +566,11 @@ Window {
         profile.dataDir = dataDirPath.text
         profile.windowWidth = parseInt(windowWidth.text) || profile.windowWidth
         profile.windowHeight = parseInt(windowHeight.text) || profile.windowHeight
+        profile.clearEnv()
+        for(var i = 0; i < envs.model.count - 1; i++) {
+            profile.env[envs.model.get(i).key] = envs.model.get(i).value;
+        }
+        profile.commandline = commandline.text
         profile.save()
     }
 

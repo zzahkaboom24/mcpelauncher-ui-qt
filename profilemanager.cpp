@@ -93,7 +93,7 @@ void ProfileManager::loadProfiles() {
         if (size >= 0) {
             for (int i = 0; i < size; i++) {
                 settings.setArrayIndex(i);
-                profile->env[settings.value("name").toString()] = settings.value("value").toString();
+                profile->env->setProperty(settings.value("name").toString().toStdString().data(), settings.value("value").toString());
             }
         }
         settings.endArray();
@@ -105,7 +105,7 @@ bool ProfileManager::validateName(QString const& name) {
     return (!name.contains('/'));
 }
 
-ProfileInfo::ProfileInfo(ProfileManager* pm) : QObject(pm), manager(pm) {
+ProfileInfo::ProfileInfo(ProfileManager* pm) : QObject(pm), manager(pm), env(new QQmlPropertyMap(pm)) {
     texturePatch = 0;
 }
 
@@ -130,12 +130,13 @@ void ProfileInfo::save() {
     settings.setValue("graphicsAPI", graphicsAPI);
 #endif
     settings.setValue("commandline", commandline);
-    settings.beginWriteArray("env", env.count());
-    QMap<QString, QString>::const_iterator it = env.constBegin();
-    for (int i = 0; it != env.constEnd(); i++, it++) {
+    settings.beginWriteArray("env", env->count());
+    auto keys = env->keys();
+    auto it = keys.constBegin();
+    for (int i = 0; it != keys.constEnd(); i++, it++) {
         settings.setArrayIndex(i);
-        settings.setValue("name", it.key());
-        settings.setValue("value", it.value());
+        settings.setValue("name", *it);
+        settings.setValue("value", env->value(*it));
     }
     settings.endArray();
     settings.endGroup();
@@ -149,4 +150,11 @@ void ProfileInfo::setName(const QString &newName) {
     this->name = newName;
     save();
     emit manager->profilesChanged();
+}
+
+void ProfileInfo::clearEnv() {
+    auto old = env;
+    env = new QQmlPropertyMap(manager);
+    changed();
+    delete old;
 }
