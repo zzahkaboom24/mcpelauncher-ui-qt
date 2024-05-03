@@ -118,9 +118,10 @@ void GameLauncher::start(bool disableGameLog, QString arch, bool hasVerifiedLice
                 args.append(QString::fromStdString(arg));
             }
         }
-        QMap<QString, QString>::const_iterator it = m_profile->env.constBegin();
-        for (int i = 0; it != m_profile->env.constEnd(); i++) {
-            env.insert(it.key(), it.value());
+
+        auto keys = m_profile->env->keys();
+        for (auto it = keys.constBegin(); it != keys.constEnd(); it++) {
+            env.insert(*it, m_profile->env->value(*it).toString());
         }
     }
     process->setProcessEnvironment(env);

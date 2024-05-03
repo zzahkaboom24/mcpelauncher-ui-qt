@@ -4,6 +4,7 @@
 #include <QObject>
 #include <QList>
 #include <QSettings>
+#include <QQmlPropertyMap>
 
 class ProfileManager;
 
@@ -22,7 +23,7 @@ class ProfileInfo : public QObject {
     Q_PROPERTY(QString arch MEMBER arch NOTIFY changed)
     Q_PROPERTY(int texturePatch MEMBER texturePatch WRITE setTexturePatch NOTIFY changed)
     Q_PROPERTY(QString commandline MEMBER commandline NOTIFY changed)
-    Q_PROPERTY(QMap<QString, QString> env MEMBER env NOTIFY changed)
+    Q_PROPERTY(QQmlPropertyMap* env MEMBER env NOTIFY changed)
 #ifdef __APPLE__
     Q_PROPERTY(int graphicsAPI MEMBER graphicsAPI WRITE setGraphicsAPI NOTIFY changed)
 #endif
@@ -59,7 +60,7 @@ public:
 
     QString commandline;
 
-    QMap<QString, QString> env;
+    QQmlPropertyMap* env;
 
 public slots:
     void setName(QString const& newName);
@@ -74,6 +75,8 @@ public slots:
         graphicsAPI = val;
     }
 #endif
+
+    void clearEnv();
 
 signals:
     void changed();

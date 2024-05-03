@@ -50,5 +50,6 @@
         <file>qml/GamepadInputField.qml</file>
         <file>LICENSE</file>
         <file>qml/LauncherUnlock.qml</file>
+        <file>Resources/icon-delete.png</file>
     </qresource>
 </RCC>
