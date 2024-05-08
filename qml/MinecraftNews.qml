@@ -142,7 +142,7 @@ ColumnLayout {
 
     function loadNews() {
         var req = new XMLHttpRequest()
-        req.open("GET", "https://www.minecraft.net/content/minecraft-net/_jcr_content.articles.grid?tileselection=auto&tagsPath=minecraft:article/news,minecraft:article/insider,minecraft:article/culture,minecraft:article/merch,minecraft:stockholm/news,minecraft:stockholm/guides,minecraft:stockholm/events,minecraft:stockholm/minecraft-builds,minecraft:stockholm/marketplace,minecraft:stockholm/deep-dives,minecraft:stockholm/merch,minecraft:stockholm/earth,minecraft:stockholm/dungeons,minecraft:stockholm/realms-plus,minecraft:stockholm/minecraft,minecraft:stockholm/realms-java,minecraft:stockholm/nether&propResPath=/content/minecraft-net/language-masters/en-us/jcr:content/root/generic-container/par/bleeding_page_sectio_1278766118/page-section-par/grid&count=2000&pageSize=20&lang=/content/minecraft-net/language-masters/en-us", true)
+        req.open("GET", "https://launchercontent.mojang.com/news.json", true)
         req.onerror = function () {
             console.log("Failed to load news")
         }
@@ -159,17 +159,16 @@ ColumnLayout {
 
     function parseNewsResponse(resp) {
         var entries = []
-        for (var i = 0; i < resp.article_grid.length; i++) {
-            var e = resp.article_grid[i]
-            var t = e.preferred_tile || e.default_tile
-            if (!t)
+        for (var i = 0; i < resp.entries.length; i++) {
+            var e = resp.entries[i]
+            if (!e)
                 continue
             entries.push({
-                             "name": t.title || t.text,
-                             "image": "https://www.minecraft.net/" + t.image.imageURL,
-                             "url": "https://minecraft.net/" + e.article_url.substr(1)
+                             "name": e.title || e.text,
+                             "image": "https://launchercontent.mojang.com/" + e.newsPageImage.url,
+                             "url": e.readMoreLink
                          })
-            console.log(t.title)
+            console.log(e.title)
         }
         newsGrid.model = entries
     }
