@@ -123,14 +123,9 @@ Window {
         title: qsTr("Connecting to Google Play failed")
     }
 
-    GameLogWindow {
-        id: gameLogWindow
-        launcher: gameLauncher
-
-        MessageDialog {
-            id: errorDialog
-            title: qsTr("Launcher Error")
-        }
+    MessageDialog {
+        id: errorDialog
+        title: qsTr("Launcher Error")
     }
 
     TroubleshooterWindow {
@@ -162,8 +157,6 @@ Window {
                 exited()
             if (crashed) {
                 application.setVisibleInDock(true)
-                gameLogWindow.show()
-                gameLogWindow.requestActivate()
             }
         }
         onCorruptedInstall: {
@@ -190,9 +183,6 @@ Window {
         onAccepted: {
             if(window.visible) {
                 window.hide();
-            }
-            if (gameLogWindow.visible) {
-                gameLogWindow.hide()
             }
         }
     }
@@ -226,29 +216,13 @@ Window {
     Connections {
         target: window
         onClosing: {
-            if (!gameLogWindow.visible) {
+            if (true) {
                 if (gameLauncher.running) {
                     close.accepted = false
                     closeRunningDialog.open()
                 } else {
                     application.quit()
                 }
-            }
-        }
-    }
-
-    Connections {
-        target: gameLogWindow
-        onClosing: {
-            if (!window.visible) {
-                if (gameLauncher.running) {
-                    close.accepted = false
-                    closeRunningDialog.open()
-                } else {
-                    application.quit()
-                }
-            } else {
-                gameLauncher.logDetached()
             }
         }
     }
