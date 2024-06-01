@@ -84,6 +84,10 @@ int main(int argc, char *argv[])
         QCoreApplication::translate("main", "directly start the game launcher with the specified profile"), "profileName", "");
     parser.addOption(profileOption);
 
+    QCommandLineOption qmlrootfileOption(QStringList() << "qmlrootfile", 
+        QCoreApplication::translate("main", "Root file for the qml loader for development"), "file", "");
+    parser.addOption(qmlrootfileOption);
+
     // TODO remove legacyParser once the old -p flag is deprecated
     if(!parser.parse(app.arguments())) {
         parser.~QCommandLineParser();
@@ -179,7 +183,7 @@ int main(int argc, char *argv[])
     engine.rootContext()->setContextProperty("SHOW_ANGLEBACKEND", QVariant(false));
 #endif
     engine.rootContext()->setContextProperty("DISABLE_DEV_MODE", QVariant(LauncherSettings::disableDevMode &= !parser.isSet(devmodeOption)));
-    engine.load(QUrl(QStringLiteral("qrc:/qml/main.qml")));
+    engine.load(QUrl(parser.isSet(qmlrootfileOption) ? parser.value(qmlrootfileOption) : QStringLiteral("qrc:/qml/main.qml")));
     if (engine.rootObjects().isEmpty())
         return -1;
 
