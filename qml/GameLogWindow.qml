@@ -21,6 +21,7 @@ ColumnLayout {
             anchors.rightMargin: 10
             width: height
             onClicked: {
+                var text = ""
                 for(var i = 0; i < gameLog.count; i++) {
                     text += gameLog.get(i).display + "\n"
                 }
@@ -148,9 +149,15 @@ ColumnLayout {
         ScrollBar.vertical: ScrollBar {
             id: scrollBar
             policy: ScrollBar.AlwaysOn
-            minimumSize: 0.1
+            // would require newer qt5 than 5.9
+            //minimumSize: 0.1
             clip: false
         }
+        Component.onCompleted: {
+            ScrollBar.vertical.contentItem.color = Qt.binding(function() { return ScrollBar.vertical.pressed ? "#ffffff" : "#bfbfbf" })
+            ScrollBar.vertical.minimumSize = 0.1
+        }
+
         clip: false
         function indexAtRelative(x, y) {
             return indexAt(x + contentX, y + contentY)
@@ -231,7 +238,7 @@ ColumnLayout {
                 console.log("pressed " + mouseX + "-" + mouseY)
                 var y = mouseY + view.contentY
                 selStartIndex = view.indexAt(mouseX, y)
-                var item = view.itemAtIndex(selStartIndex);
+                var item = view.itemAt(mouseX, y);
                 if(item) {
                     selStartPos = item.positionAt(mouseX - item.x, y - item.y)
                 }
@@ -260,7 +267,7 @@ ColumnLayout {
 
                 selEndIndex = view.indexAt(mouseX, y)
 
-                var item = view.itemAtIndex(selEndIndex);
+                var item = view.itemAt(mouseX, y);
                 if(item) {
                     selEndPos = item.positionAt(mouseX - item.x, y - item.y)
                 }
