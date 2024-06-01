@@ -264,7 +264,6 @@ ColumnLayout {
                 if(item) {
                     selEndPos = item.positionAt(mouseX - item.x, y - item.y)
                 }
-                console.log(JSON.stringify({ selStartIndex, selStartPos, selEndIndex, selEndPos }))
                 timer.offset = offset
                 timer.running = offset !== 0
 
