@@ -67,12 +67,13 @@ LauncherBase {
     }
 
     EditProfileWindow {
-        id: profileEditWindow
-        onClosing: profileComboBox.onAddProfileResult(profileEditWindow.profile)
+        //anchors.centerIn: parent
+        //x: 10
+        id: profileEditPopup
+        onAboutToHide: profileComboBox.onAddProfileResult(profileEditPopup.profile)
         versionManager: rowLayout.versionManager
         profileManager: rowLayout.profileManager
         playVerChannel: rowLayout.playVerChannel
-        modality: Qt.ApplicationModal
     }
 
     Rectangle {
@@ -81,20 +82,19 @@ LauncherBase {
         height: 66
 
         RowLayout {
-            spacing: -2
+            spacing: -1
             anchors.verticalCenter: parent.verticalCenter
             height: 44
             x: 10
 
             ProfileComboBox {
                 property bool loaded: false
-
                 id: profileComboBox
                 Layout.preferredWidth: 170
                 Layout.fillHeight: true
                 onAddProfileSelected: {
-                    profileEditWindow.reset()
-                    profileEditWindow.show()
+                    profileEditPopup.reset()
+                    profileEditPopup.open()
                 }
                 Component.onCompleted: {
                     setProfile(profileManager.activeProfile)
@@ -115,6 +115,7 @@ LauncherBase {
             MButton {
                 Layout.preferredHeight: parent.height
                 Layout.preferredWidth: parent.height
+                z: hovered ? 1 : -1
                 Image {
                     anchors.centerIn: parent
                     source: "qrc:/Resources/icon-edit.png"
@@ -124,10 +125,9 @@ LauncherBase {
                     opacity: enabled ? 1.0 : 0.3
                 }
                 enabled: !(playDownloadTask.active || apkExtractionTask.active || gameLauncher.running)
-
                 onClicked: {
-                    profileEditWindow.setProfile(profileComboBox.getProfile())
-                    profileEditWindow.show()
+                    profileEditPopup.setProfile(profileComboBox.getProfile())
+                    profileEditPopup.open()
                 }
             }
         }
@@ -143,7 +143,7 @@ LauncherBase {
             subText: (isVersionsInitialized && (googleLoginHelper.account == null || playVerChannel.licenseStatus > 1 /* Fail or Succeeded */
                                                 )) ? ((googleLoginHelper.account !== null && playVerChannel.hasVerifiedLicense || !LAUNCHER_ENABLE_GOOGLE_PLAY_LICENCE_CHECK) ? (gameLauncher.running ? "" : (getDisplayedVersionName() ? ("Minecraft " + getDisplayedVersionName()).toUpperCase() : qsTr("Please wait..."))) : "Failed to obtain apk url") : "..."
             enabled: !gameLauncher.running && (isVersionsInitialized && playVerChannel.licenseStatus > 1 /* Fail or Succeeded */
-                      ) && !(playDownloadTask.active || apkExtractionTask.active || updateChecker.active || !checkSupport()) && (getDisplayedVersionName()) && (googleLoginHelper.account !== null || !LAUNCHER_ENABLE_GOOGLE_PLAY_LICENCE_CHECK)
+                                               ) && !(playDownloadTask.active || apkExtractionTask.active || updateChecker.active || !checkSupport()) && (getDisplayedVersionName()) && (googleLoginHelper.account !== null || !LAUNCHER_ENABLE_GOOGLE_PLAY_LICENCE_CHECK)
 
             onClicked: {
                 if (googleLoginHelper.account !== null && !playVerChannel.hasVerifiedLicense && LAUNCHER_ENABLE_GOOGLE_PLAY_LICENCE_CHECK) {
