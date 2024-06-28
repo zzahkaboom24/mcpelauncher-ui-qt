@@ -85,7 +85,7 @@ ColumnLayout {
                packageName: "com.mojang.minecraftpe"
                keepApks: false
                dryrun: true
-               versionCode: Number.parseInt(versionsCodeField.text)//(manualgoogleLoginHelperInstance.chromeOS ? 1000000000 : 0) + versionBox.codes[versionBox.currentIndex]
+               versionCode: parseInt(versionsCodeField.text)//(manualgoogleLoginHelperInstance.chromeOS ? 1000000000 : 0) + versionBox.codes[versionBox.currentIndex]
                onActiveChanged: {
                 if(manualPlayDownloadTask.active) {
                     scope.apkUrls = "";
